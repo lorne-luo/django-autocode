@@ -3,9 +3,15 @@
 
 
 {% block content %}
-  <div class="row m-t-2">
-    {% for model_name in models_name %}
-      <a href="{% url 'autocode:autocode-model' app_name=app_name model_name=model_name %}">{{ model_name }}</a>
-    {% endfor %}
+  <div class="m-t-2">
+    <ul>
+      {% for model_name in models_name %}
+        <li>
+          <a
+            href="{% url 'autocode:autocode-model' app_name=app_name model_name=model_name %}">{{ model_name }}</a><br/>
+        </li>
+      {% endfor %}
+    </ul>
+
   </div>
 {% endblock content %}

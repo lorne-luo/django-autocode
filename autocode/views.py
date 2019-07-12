@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.views.generic import TemplateView
 
-from autocode.autocode import find_models_by_app_name
+from autocode.autocode import find_models_by_app_name, get_fields_and_titles
 
 
 class BaseCodeView(TemplateView):
@@ -23,6 +23,8 @@ class BaseCodeView(TemplateView):
         context['models'] = model_list
         context['app_name'] = app_name
         context['models_name'] = [x.__name__ for x in model_list]
+        fields_labels = get_fields_and_titles(model_list[0])
+        context['fields_labels'] = fields_labels
 
         return context
 
