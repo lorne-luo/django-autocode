@@ -1,0 +1,20 @@
+{% load autocode_tags %}
+<div class="file">
+<h4><label for="forms.py">forms.py</label></h4>
+
+<pre class="prettyprint lang-py" id="forms.py">
+from rest_framework import viewsets, permissions
+from . import serializers
+from .. import {{ models|list_models }}
+
+{% for model in models %}
+class {{ model|get_name }}ViewSet(viewsets.ModelViewSet):
+    """ViewSet for {{ model|get_name }} model"""
+
+    queryset = models.{{ model|get_name }}.objects.all()
+    serializer_class = serializers.{{ model|get_name }}Serializer
+    permission_classes = [permissions.IsAuthenticated]
+
+{% endfor %}
+</pre>
+</div>

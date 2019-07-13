@@ -1,0 +1,21 @@
+{% load autocode_tags %}
+<div class="file">
+<h4><label for="forms.py">forms.py</label></h4>
+
+<pre class="prettyprint lang-py" id="forms.py">
+from django import forms
+from rest_framework import serializers
+
+from ..models import {{ models|list_models }}
+
+{% for model in models %}
+class {{ model|get_name }}Serializer(serializers.ModelSerializer):
+    """Serializer for {{ model|get_name }} model"""
+
+    class Meta:
+        model = {{ model|get_name }}
+        fields = {{ model|list_fields }}
+
+{% endfor %}
+</pre>
+</div>
