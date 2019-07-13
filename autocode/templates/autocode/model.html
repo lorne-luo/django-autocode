@@ -3,9 +3,13 @@
 
 
 {% block content %}
-  {% include 'autocode/code_templates/import_models.html' with models_name=models_name %}
-  <br/>
   {{ fields_labels|first|join:", " }}
   <br/>
   {{ fields_labels|last|join:", " }}
+  <br/>
+  <br/>
+
+
+{% include 'autocode/code/forms.html' with models_name=models_name %}
+
 {% endblock content %}
