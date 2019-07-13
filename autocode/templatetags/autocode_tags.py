@@ -1,4 +1,5 @@
 from django import template
+from django.utils.text import re_camel_case
 
 register = template.Library()
 
@@ -11,6 +12,13 @@ def get(d, k):
 @register.filter(name='get_name')
 def get_name(model):
     return model._meta.object_name
+
+
+@register.filter(name='get_var')
+def get_var(model):
+    """python var name: CompanyInfo -> company_info"""
+    name = model._meta.object_name
+    return re_camel_case.sub(r'_\1', name).strip('_').lower()
 
 
 @register.filter(name='get_app')

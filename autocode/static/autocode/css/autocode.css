@@ -6,7 +6,7 @@
   width:100%;
 }
 .code {
-  height: 220px;
+  height: 320px;
   width: 100%;
   border: 1px solid #ccc;
   font: 16px/26px Georgia, Garamond, Serif;
@@ -17,4 +17,8 @@
   float:left;
   margin:0;
   width: 50%;
+}
+footer {
+  clear:both;
+  height:100px;
 }

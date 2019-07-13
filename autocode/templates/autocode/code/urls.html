@@ -1,0 +1,31 @@
+{% load autocode_tags %}
+<div class="file">
+<h4><label for="urls.py">urls.py</label></h4>
+
+<textarea id="urls.py" class="code">
+from django.urls import path, include
+from rest_framework import routers
+
+from . import api
+from . import views
+from .api import views as api_views
+
+router = routers.DefaultRouter()
+{% for model in models %}
+router.register(r'{{ model|get_var }}', api_views.{{ model|get_name }}ViewSet){% endfor %}
+
+urlpatterns = (
+    # urls for Django Rest Framework API
+    path('api/v1/', include(router.urls)),
+)
+{% for model in models %}
+urlpatterns += (
+    # urls for {{ model|get_name }}
+    path('{{ model|get_var }}/{{ model|get_var }}/', views.{{ model|get_name }}ListView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_list'),
+    path('{{ model|get_var }}/{{ model|get_var }}/create/', views.{{ model|get_name }}CreateView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_create'),
+    path('{{ model|get_var }}/{{ model|get_var }}/detail/&lt;slug:slug&gt;/', views.{{ model|get_name }}DetailView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_detail'),
+    path('{{ model|get_var }}/{{ model|get_var }}/update/&lt;slug:slug&gt;/', views.{{ model|get_name }}UpdateView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_update'),
+)
+{% endfor %}
+</textarea>
+</div>
