@@ -2,7 +2,7 @@
 <div class="file">
 <h4><label for="views.py">views.py</label></h4>
 
-<textarea id="views.py" class="code">
+<pre class="prettyprint lang-py code" id="views.py">
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 {% include 'autocode/code/includes/import_models.html' with suffix='Form' %}
@@ -27,5 +27,5 @@ class {{ model|get_name }}UpdateView(LoginRequiredMixin, UpdateView):
 class {{ model|get_name }}DetailView(LoginRequiredMixin, DetailView):
     model = {{ model|get_name }}
 {% endfor %}
-</textarea>
+</pre>
 </div>

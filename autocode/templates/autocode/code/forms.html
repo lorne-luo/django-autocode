@@ -1,9 +1,11 @@
 {% load autocode_tags %}
 <div class="file">
 <h4><label for="forms.py">forms.py</label></h4>
-<textarea id="forms.py" class="code">
+
+<pre class="prettyprint lang-py" id="forms.py">
 from django import forms
-{% include 'autocode/code/includes/import_models.html' with models=models %}
+from .models import {{ models|list_models }}
+
 {% for model in models %}
 class {{ model|get_name }}Form(forms.ModelForm):
     """ Add form for {{ model|get_name }} """
@@ -12,5 +14,5 @@ class {{ model|get_name }}Form(forms.ModelForm):
         model = {{ model|get_name }}
         fields = {{ model|list_fields }}
 {% endfor %}
-</textarea>
+</pre>
 </div>

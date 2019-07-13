@@ -2,7 +2,7 @@
 <div class="file">
 <h4><label for="urls.py">urls.py</label></h4>
 
-<textarea id="urls.py" class="code">
+<pre class="prettyprint lang-py" id="urls.py">
 from django.urls import path, include
 from rest_framework import routers
 
@@ -27,5 +27,5 @@ urlpatterns += (
     path('{{ model|get_var }}/{{ model|get_var }}/update/&lt;slug:slug&gt;/', views.{{ model|get_name }}UpdateView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_update'),
 )
 {% endfor %}
-</textarea>
+</pre>
 </div>

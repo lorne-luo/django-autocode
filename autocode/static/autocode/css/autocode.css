@@ -5,13 +5,9 @@
   max-width: none;
   width:100%;
 }
-.code {
+.prettyprint, .code {
   height: 320px;
   width: 100%;
-  border: 1px solid #ccc;
-  font: 16px/26px Georgia, Garamond, Serif;
-  overflow: auto;
-  line-height: 18px;
 }
 .file{
   float:left;
