@@ -56,3 +56,5 @@ TEMPLATES = [
         },
     },
 ]
+
+APPEND_SLASH=True
