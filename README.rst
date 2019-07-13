@@ -1,5 +1,5 @@
 =============================
-django-autocode
+Django-Autocode
 =============================
 
 .. image:: https://badge.fury.io/py/django-autocode.svg
@@ -29,24 +29,19 @@ Add it to your `INSTALLED_APPS`:
 
 .. code-block:: python
 
-    INSTALLED_APPS = (
-        ...
-        'autocode.apps.AutocodeConfig',
-        ...
-    )
+    if DEBUG:
+        INSTALLED_APPS = +[
+            'autocode',
+        ]
 
 Add django-autocode's URL patterns:
 
 .. code-block:: python
 
-    from autocode import urls as autocode_urls
-
-
-    urlpatterns = [
-        ...
-        url(r'^', include(autocode_urls)),
-        ...
-    ]
+    if DEBUG:
+        urlpatterns += [
+            url(r'', include('autocode.urls', namespace='autocode')),
+        ]
 
 Features
 --------
@@ -63,14 +58,3 @@ Does the code actually work?
     source <YOURVIRTUALENV>/bin/activate
     (myenv) $ pip install tox
     (myenv) $ tox
-
-Credits
--------
-
-Tools used in rendering this package:
-
-*  Cookiecutter_
-*  `cookiecutter-djangopackage`_
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage
