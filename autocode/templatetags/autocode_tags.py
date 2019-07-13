@@ -37,5 +37,7 @@ def list_models(models, suffix=''):
 
 
 @register.filter(name='list_fields')
-def list_fields(model, suffix=''):
-    return '["%s"]' % '", "'.join([f.name + suffix for f in model._meta.fields])
+def list_fields(model, ignore_pk=False):
+    if ignore_pk:
+        return '["%s"]' % '", "'.join([f.name for f in model._meta.fields if f.name not in ['pk', 'id']])
+    return '["%s"]' % '", "'.join([f.name for f in model._meta.fields])

@@ -1,0 +1,27 @@
+{% load autocode_tags %}
+<div class="file">
+<h4><label for="views.py">views.py</label></h4>
+
+<pre class="prettyprint lang-py" id="forms.py">
+from django.contrib import admin
+from django import forms
+from .models import {{ models|list_models }}
+
+{% for model in models %}
+# --------------- {{ model|get_name }} Admin ---------------
+class {{ model|get_name }}AdminForm(forms.ModelForm):
+
+    class Meta:
+        model = {{ model|get_name }}
+        fields = {{ model|list_fields:True }}
+
+
+class {{ model|get_name }}Admin(admin.ModelAdmin):
+    form = {{ model|get_name }}AdminForm
+    list_display = {{ model|list_fields:True }}
+    readonly_fields = ['pk']
+
+admin.site.register({{ model|get_name }}, {{ model|get_name }}Admin)
+{% endfor %}
+</pre>
+</div>
