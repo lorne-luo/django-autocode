@@ -1,0 +1,14 @@
+
+.container {
+  margin-left: 50px !important;
+  margin-right: 50px !important;
+  max-width: none;
+}
+.code {
+  height: 220px;
+  width: 50%;
+  border: 1px solid #ccc;
+  font: 16px/26px Georgia, Garamond, Serif;
+  overflow: auto;
+  line-height: 18px;
+}
