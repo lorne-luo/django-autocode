@@ -13,7 +13,9 @@
       {% endfor %}
     </ul>
 
-{% include 'autocode/code/forms.html' with models_name=models_name %}
+    {% include 'autocode/code/forms.html' %}
+
+    {% include 'autocode/code/views.html' %}
 
   </div>
 {% endblock content %}

@@ -1,0 +1,31 @@
+{% load autocode_tags %}
+<div class="file">
+<h4><label for="forms.py">forms.py</label></h4>
+
+<textarea id="forms.py" class="code">
+from django.views.generic import DetailView, ListView, UpdateView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+{% include 'autocode/code/includes/import_models.html' with suffix='Form' %}
+from .forms import {{ models|list_models:'Form' }}
+{% for model in models %}
+class {{ model|get_name }}ListView(LoginRequiredMixin, ListView):
+    model = {{ model|get_name }}
+    template_name_suffix = '_list'
+
+class {{ model|get_name }}CreateView(LoginRequiredMixin, CreateView):
+    model = {{ model|get_name }}
+    form_class = {{ model|get_name }}Form
+    template_name_suffix = '_form'
+
+
+class {{ model|get_name }}UpdateView(LoginRequiredMixin, UpdateView):
+    model = {{ model|get_name }}
+    form_class = {{ model|get_name }}Form
+    template_name_suffix = '_form'
+
+
+class {{ model|get_name }}DetailView(LoginRequiredMixin, DetailView):
+    model = {{ model|get_name }}
+{% endfor %}
+</textarea>
+</div>

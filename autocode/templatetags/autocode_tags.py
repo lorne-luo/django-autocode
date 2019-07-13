@@ -24,10 +24,10 @@ def get_model_label(model):
 
 
 @register.filter(name='list_models')
-def list_models(models):
-    return ', '.join([m._meta.object_name for m in models])
+def list_models(models, suffix=''):
+    return ', '.join([m._meta.object_name + suffix for m in models])
 
 
 @register.filter(name='list_fields')
-def list_fields(model):
-    return '["%s"]' % '", "'.join([f.name for f in model._meta.fields])
+def list_fields(model, suffix=''):
+    return '["%s"]' % '", "'.join([f.name + suffix for f in model._meta.fields])

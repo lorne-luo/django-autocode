@@ -1,4 +1,5 @@
 {% load autocode_tags %}
+<div class="file">
 <h4><label for="forms.py">forms.py</label></h4>
 <textarea id="forms.py" class="code">
 from django import forms
@@ -12,3 +13,4 @@ class {{ model|get_name }}Form(forms.ModelForm):
         fields = {{ model|list_fields }}
 {% endfor %}
 </textarea>
+</div>
