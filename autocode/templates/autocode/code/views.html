@@ -5,7 +5,7 @@
 <pre class="prettyprint lang-py code" id="views.py">
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-{% include 'autocode/code/includes/import_models.html' with suffix='Form' %}
+from .models import {{ models|list_models }}
 from .forms import {{ models|list_models:'Form' }}
 {% for model in models %}
 class {{ model|get_name }}ListView(LoginRequiredMixin, ListView):
