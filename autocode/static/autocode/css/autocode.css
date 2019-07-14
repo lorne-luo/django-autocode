@@ -3,18 +3,26 @@
   padding-left: 50px !important;
   padding-right: 50px !important;
   max-width: none;
-  width:100%;
-}
-.prettyprint, .code {
-  height: 320px;
   width: 100%;
 }
-.file{
-  float:left;
-  margin:0;
-  width: 50%;
+
+.prettyprint, .code {
+  /*height: 320px;*/
+  width: 100%;
 }
+
+.file {
+  float: left;
+  margin: 0;
+  width: 49%;
+  margin-left: 1%;
+}
+
 footer {
-  clear:both;
-  height:100px;
+  clear: both;
+  height: 100px;
+}
+
+.clear {
+  clear: both;
 }
