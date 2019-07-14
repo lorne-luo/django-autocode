@@ -14,7 +14,7 @@ def find_models_by_app_name(app_name):
     return model_list
 
 
-def get_fields_and_titles(model):
+def get_fields_and_labels(model):
     titles = []
     fields = []
 

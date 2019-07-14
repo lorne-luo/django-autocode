@@ -1,0 +1,40 @@
+{% load autocode_tags %}
+<div class="file">
+<h5><label for="{{ model|get_name|lower }}_form.py">{{ model|get_name|lower }}_form.py</label></h5>
+
+
+<pre class="prettyprint lang-html code" id="{{ model|get_name|lower }}_form.py">
+{% templatetag openblock %} extends "base.html" {% templatetag closeblock %}
+{% templatetag openblock %} load static {% templatetag closeblock %}
+
+{% templatetag openblock %} block content {% templatetag closeblock %}
+
+&lt;p&gt;&lt;a class=&quot;btn btn-default&quot; href=&quot;{% templatetag openblock %} url '{{ model_name|lower }}_{{ model_name|lower }}_list' {% templatetag closeblock %}&quot;&gt;{{ model_name }} List&lt;/a&gt;&lt;/p&gt;
+
+&lt;form method=&quot;post&quot; action=&quot;&quot; enctype=&quot;multipart/form-data&quot; class=&quot;form formContainer&quot; id=&quot;{{ model_name|lower }}_form&quot; novalidate&gt;
+  {% templatetag openblock %} csrf_token {% templatetag closeblock %}
+
+  {% templatetag openblock %} for field in form.hidden_fields {% templatetag closeblock %}
+    {% templatetag openvariable %} field {% templatetag closevariable %}
+  {% templatetag openblock %} endfor {% templatetag closeblock %}
+
+  {% templatetag openblock %} for field in form.visible_fields {% templatetag closeblock %}
+    &lt;div class="formRow"&gt;
+      &lt;label for="id_{% templatetag openvariable %} field.name {% templatetag closevariable %}"&gt;
+        {% templatetag openvariable %} field.label_tag {% templatetag closevariable %} {% templatetag openblock %} if field.field.required {% templatetag closeblock %}*{% templatetag openblock %} endif {% templatetag closeblock %}
+      &lt;/label&gt;
+
+      {% templatetag openblock %} if field.help_text {% templatetag closeblock %}&lt;p class="help"&gt;{% templatetag openvariable %} field.help_text|safe {% templatetag closevariable %}&lt;/p&gt;{% templatetag openblock %} endif {% templatetag closeblock %}
+
+      {% templatetag openvariable %} field {% templatetag closevariable %}
+      &lt;div class="formErrorMsg"&gt;{% templatetag openvariable %} field.errors {% templatetag closevariable %}&lt;/div&gt;
+    &lt;/div&gt;
+  {% templatetag openblock %} endfor {% templatetag closeblock %}
+
+  {% templatetag openvariable %} form.non_field_errors {% templatetag closevariable %}
+  &lt;button class=&quot;btn btn-primary btn-submit&quot; type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+
+&lt;/form&gt;
+{% templatetag openblock %} endblock {% templatetag closeblock %}
+</pre>
+</div>

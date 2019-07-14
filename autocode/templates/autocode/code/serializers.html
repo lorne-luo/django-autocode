@@ -14,7 +14,7 @@ class {{ model|get_name }}Serializer(serializers.ModelSerializer):
 
     class Meta:
         model = {{ model|get_name }}
-        fields = {{ model|list_fields }}
+        fields = {{ model|list_field_names }}
 
 {% endfor %}
 </pre>

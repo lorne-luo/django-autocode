@@ -3,12 +3,6 @@
 
 
 {% block content %}
-  {{ fields_labels|first|join:", " }}
-  <br/>
-  {{ fields_labels|last|join:", " }}
-  <br/>
-  <br/>
-
 
   {% include 'autocode/code/forms.html' %}
 
@@ -18,10 +12,16 @@
 
   {% include 'autocode/code/admin.html' %}
 
+  <h3 class="clear">API Views</h3>
+
   {% include 'autocode/code/serializers.html' %}
 
   {% include 'autocode/code/api_views.html' %}
 
   <h3 class="clear">Templates</h3>
+
+  {% for model in models %}
+    {% include 'autocode/code/template_form.html' with model=model %}
+  {% endfor %}
 
 {% endblock content %}

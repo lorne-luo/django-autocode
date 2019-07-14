@@ -21,13 +21,17 @@
 
     {% include 'autocode/code/admin.html' %}
 
+    <h3 id="api_view_title" class="clear">API Views</h3>
+
     {% include 'autocode/code/serializers.html' %}
 
     {% include 'autocode/code/api_views.html' %}
 
-    <h3 class="clear">Templates</h3>
+    <h3 id="templates" class="clear">Templates</h3>
 
-    {% include 'autocode/code/api_views.html' %}
+    {% for model in models %}
+      {% include 'autocode/code/template_form.html' with model=model %}
+    {% endfor %}
 
   </div>
 {% endblock content %}
