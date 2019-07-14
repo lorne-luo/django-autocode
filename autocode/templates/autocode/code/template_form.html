@@ -9,9 +9,9 @@
 
 {% templatetag openblock %} block content {% templatetag closeblock %}
 
-&lt;p&gt;&lt;a class=&quot;btn btn-default&quot; href=&quot;{% templatetag openblock %} url '{{ model_name|lower }}_{{ model_name|lower }}_list' {% templatetag closeblock %}&quot;&gt;{{ model_name }} List&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&quot;btn btn-default&quot; href=&quot;{% templatetag openblock %} url '{{ model|get_name|lower }}_{{ model|get_name|lower }}_list' {% templatetag closeblock %}&quot;&gt;{{ model|get_name }} List&lt;/a&gt;&lt;/p&gt;
 
-&lt;form method=&quot;post&quot; action=&quot;&quot; enctype=&quot;multipart/form-data&quot; class=&quot;form formContainer&quot; id=&quot;{{ model_name|lower }}_form&quot; novalidate&gt;
+&lt;form method=&quot;post&quot; action=&quot;&quot; enctype=&quot;multipart/form-data&quot; class=&quot;form formContainer&quot; id=&quot;{{ model|get_name|lower }}_form&quot; novalidate&gt;
   {% templatetag openblock %} csrf_token {% templatetag closeblock %}
 
   {% templatetag openblock %} for field in form.hidden_fields {% templatetag closeblock %}

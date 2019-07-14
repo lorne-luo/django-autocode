@@ -33,5 +33,9 @@
       {% include 'autocode/code/template_form.html' with model=model %}
     {% endfor %}
 
+    {% for model in models %}
+      {% include 'autocode/code/template_list.html' with model=model %}
+    {% endfor %}
+
   </div>
 {% endblock content %}

@@ -1,0 +1,30 @@
+{% load autocode_tags %}
+<div class="file">
+<h5><label for="{{ model|get_name|lower }}_list.py">{{ model|get_name|lower }}_list.py</label></h5>
+
+
+<pre class="prettyprint lang-html code" id="{{ model|get_name|lower }}_list.py">
+{% templatetag openblock %} extends "base.html" {% templatetag closeblock %}
+{% templatetag openblock %} load static {% templatetag closeblock %}
+
+{% templatetag openblock %} block content {% templatetag closeblock %}
+
+&lt;p&gt;&lt;a class=&quot;btn btn-default&quot; href=&quot;{% templatetag openblock %} url '{{ model|get_name|lower }}_{{ model|get_name|lower }}_list' {% templatetag closeblock %}&quot;&gt;{{ model|get_name }} List&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&quot;btn btn-default&quot; href=&quot;{% templatetag openblock %} url '{{ model|get_name|lower }}_{{ model|get_name|lower }}_create' {% templatetag closeblock %}&quot;&gt;Create new {{ model|get_name|lower }}&lt;/a&gt;&lt;/p&gt;
+
+&lt;table class="table"&gt;
+  &lt;tr&gt;{% for field in model|get_fields %}
+    &lt;th&gt;{{ field.verbose_name|title }}&lt;/th&gt;{% endfor %}
+  &lt;/tr&gt;
+  {% templatetag openblock %} for object in object_list {% templatetag closeblock %}
+    &lt;tr&gt;{% for field in model|get_fields %}
+      &lt;td&gt;{% templatetag openvariable %} object.{{ field.name }} {% templatetag closevariable %}&lt;/td&gt;{% endfor %}
+    &lt;/tr&gt;
+  {% templatetag openblock %} endfor {% templatetag closeblock %}
+&lt;/table&gt;
+
+{% templatetag openblock %} endblock {% templatetag closeblock %}
+</pre>
+</div>
+
+

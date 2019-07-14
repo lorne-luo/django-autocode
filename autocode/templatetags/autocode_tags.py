@@ -43,8 +43,8 @@ def list_field_names(model, ignore_pk=False):
     return '["%s"]' % '", "'.join([f.name for f in model._meta.fields])
 
 
-@register.filter(name='list_fields')
-def list_fields(model, ignore_pk=False):
+@register.filter(name='get_fields')
+def get_fields(model, ignore_pk=False):
     if ignore_pk:
         return [x for x in model._meta.fields if x.name not in ['id', 'pk']]
 
