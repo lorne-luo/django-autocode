@@ -5,28 +5,28 @@
 {% block content %}
 
     <hr>
-    {% include 'autocode/includes/file.html' with path='autocode/code/forms.html' file_name='forms.py' %}
+    {% include 'autocode/includes/file.html' with path='autocode/code/forms.py.html' file_name='forms.py' %}
 
-    {% include 'autocode/includes/file.html' with path='autocode/code/views.html' file_name='views.py' %}
+    {% include 'autocode/includes/file.html' with path='autocode/code/views.py.html' file_name='views.py' %}
 
-    {% include 'autocode/includes/file.html' with path='autocode/code/urls.html' file_name='urls.py' %}
+    {% include 'autocode/includes/file.html' with path='autocode/code/urls.py.html' file_name='urls.py' %}
 
-    {% include 'autocode/includes/file.html' with path='autocode/code/admin.html' file_name='admin.py' %}
+    {% include 'autocode/includes/file.html' with path='autocode/code/admin.py.html' file_name='admin.py' %}
 
     <h3 id="api_view_title" class="clear">API Views</h3>
     <hr>
-    {% include 'autocode/includes/file.html' with path='autocode/code/serializers.html' file_name='serializers.py' %}
+    {% include 'autocode/includes/file.html' with path='autocode/code/serializers.py.html' file_name='serializers.py' %}
 
-    {% include 'autocode/includes/file.html' with path='autocode/code/api_views.html' file_name='api_views.py' %}
+    {% include 'autocode/includes/file.html' with path='autocode/code/api_views.py.html' file_name='api_views.py' %}
 
     <h3 id="templates" class="clear">Templates</h3>
     <hr>
     {% for model in models %}
-      {% include 'autocode/code/template_form.html' with model=model %}
+      {% include 'autocode/code/{model_name}_form.html' with model=model %}
     {% endfor %}
 
     {% for model in models %}
-      {% include 'autocode/code/template_list.html' with model=model %}
+      {% include 'autocode/code/{model_name}_list.html' with model=model %}
     {% endfor %}
 
 {% endblock content %}
