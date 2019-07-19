@@ -1,7 +1,24 @@
 import inspect
+import os
+from functools import reduce
 from importlib import import_module
 
 from django.db import models
+
+file_path = os.path.dirname(os.path.realpath(__file__))
+template_root = os.path.abspath(os.path.join(file_path, 'templates', 'autocode', 'code'))
+
+code_groups = {
+    'all': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html', 'api_views.py.html',
+            'serializers.py.html', 'api_views.py.html', 'serializers.py.html'],
+    'app': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
+    'views': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
+    'templates': ['{model_name}_form.html', '{model_name}_list.html']
+}
+all_templates = list(set(reduce(list.__add__, code_groups.values())))
+
+py_files = ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html', 'api_views.py.html',
+            'serializers.py.html']
 
 
 def find_models_by_app_name(app_name):
