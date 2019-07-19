@@ -8,9 +8,7 @@
 {% templatetag openblock %} load static {% templatetag closeblock %}
 
 {% templatetag openblock %} block content {% templatetag closeblock %}
-
 &lt;p&gt;&lt;a class=&quot;btn btn-default&quot; href=&quot;{% templatetag openblock %} url '{{ model|get_name|lower }}_{{ model|get_name|lower }}_list' {% templatetag closeblock %}&quot;&gt;{{ model|get_name }} List&lt;/a&gt;&lt;/p&gt;
-
 &lt;form method=&quot;post&quot; action=&quot;&quot; enctype=&quot;multipart/form-data&quot; class=&quot;form formContainer&quot; id=&quot;{{ model|get_name|lower }}_form&quot; novalidate&gt;
   {% templatetag openblock %} csrf_token {% templatetag closeblock %}
 
@@ -23,9 +21,7 @@
       &lt;label for="id_{% templatetag openvariable %} field.name {% templatetag closevariable %}"&gt;
         {% templatetag openvariable %} field.label_tag {% templatetag closevariable %} {% templatetag openblock %} if field.field.required {% templatetag closeblock %}*{% templatetag openblock %} endif {% templatetag closeblock %}
       &lt;/label&gt;
-
       {% templatetag openblock %} if field.help_text {% templatetag closeblock %}&lt;p class="help"&gt;{% templatetag openvariable %} field.help_text|safe {% templatetag closevariable %}&lt;/p&gt;{% templatetag openblock %} endif {% templatetag closeblock %}
-
       {% templatetag openvariable %} field {% templatetag closevariable %}
       &lt;div class="formErrorMsg"&gt;{% templatetag openvariable %} field.errors {% templatetag closevariable %}&lt;/div&gt;
     &lt;/div&gt;
@@ -33,7 +29,6 @@
 
   {% templatetag openvariable %} form.non_field_errors {% templatetag closevariable %}
   &lt;button class=&quot;btn btn-primary btn-submit&quot; type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
-
 &lt;/form&gt;
 {% templatetag openblock %} endblock {% templatetag closeblock %}
 </pre>

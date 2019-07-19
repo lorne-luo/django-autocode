@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sites",
     "autocode",
-    "example.example",
+    "example",
 ]
 
 SITE_ID = 1

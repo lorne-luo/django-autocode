@@ -1,11 +1,6 @@
-{% load autocode_tags %}
-<div class="file">
-<h5><label for="api_forms.py">api_forms.py</label></h5>
-
-<pre class="prettyprint lang-py" id="api_forms.py">
-from rest_framework import viewsets, permissions
+{% load autocode_tags %}from rest_framework import viewsets, permissions
 from . import serializers
-from .. import {{ models|list_models }}
+from ..models import {{ models|list_models }}
 
 {% for model in models %}
 class {{ model|get_name }}ViewSet(viewsets.ModelViewSet):
@@ -16,5 +11,3 @@ class {{ model|get_name }}ViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 {% endfor %}
-</pre>
-</div>

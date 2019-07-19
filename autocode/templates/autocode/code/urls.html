@@ -1,9 +1,4 @@
-{% load autocode_tags %}
-<div class="file">
-<h5><label for="urls.py">urls.py</label></h5>
-
-<pre class="prettyprint lang-py" id="urls.py">
-from django.urls import path, include
+{% load autocode_tags %}from django.urls import path, include
 from rest_framework import routers
 
 from . import api
@@ -27,5 +22,3 @@ urlpatterns += (
     path('{{ model|get_var }}/{{ model|get_var }}/update/&lt;slug:slug&gt;/', views.{{ model|get_name }}UpdateView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_update'),
 )
 {% endfor %}
-</pre>
-</div>
