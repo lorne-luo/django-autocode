@@ -2,7 +2,7 @@ from django.apps import AppConfig
 from django.contrib import admin
 
 
-class RosettaAppConfig(AppConfig):
+class AutomodelAppConfig(AppConfig):
     name = 'rosetta'
 
     def ready(self):

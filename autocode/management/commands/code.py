@@ -9,7 +9,7 @@ from django.db import models
 from django.utils.module_loading import import_string
 
 from .templates.api_serializers import SERIALIZERS_HEADER, SERIALIZERS_BODY
-from .templates.api_urls import API_URLS_HEADER, API_URLS_BODY, API_URLS_FOOTER
+# from .templates.api_urls import API_URLS_HEADER, API_URLS_BODY, API_URLS_FOOTER
 from .templates.api_views import API_VIEWS_HEADER, API_VIEWS_BODY
 from .templates.forms import FORMS_HEADER, FORMS_BODY
 from .templates.templates import LIST_JS, LIST_TEMPLATES, MENU_TEMPLATE, MENU_APP_TEMPLATE, TABLE_HEAD_TEMPLATES, \
@@ -54,11 +54,16 @@ class Command(BaseCommand):
         self.module_str = path.replace('.py', '').replace('/', '.').strip('.')
         self.module_str = self.module_str if '.models' in self.module_str else self.module_str + '.models'
 
+
+
         try:
             self.scan_models(self.module_str)
         except AttributeError as e:
             self.stdout.write("Error: %s" % e)
             return
+
+        print(self.model_list)
+        return
 
         self.stdout.write('\n############################## info ##############################')
         self.stdout.write(self.module_str)
@@ -228,13 +233,13 @@ class Command(BaseCommand):
         self.stdout.write(content)
         return content
 
-    def get_api_urls_content(self):
-        content = self.render_content(API_URLS_HEADER)
-        for model in self.model_list:
-            content += self.render_content(API_URLS_BODY, model)
-        content += API_URLS_FOOTER
-        self.stdout.write(content)
-        return content
+    # def get_api_urls_content(self):
+    #     content = self.render_content(API_URLS_HEADER)
+    #     for model in self.model_list:
+    #         content += self.render_content(API_URLS_BODY, model)
+    #     content += API_URLS_FOOTER
+    #     self.stdout.write(content)
+    #     return content
 
     def get_api_views_content(self):
         content = self.render_content(API_VIEWS_HEADER)
@@ -243,9 +248,9 @@ class Command(BaseCommand):
         self.stdout.write(content)
         return content
 
-    def get_reverse_js(self):
-        management.call_command('js_reverse')
-        management.call_command('collectstatic_js_reverse')
+    # def get_reverse_js(self):
+    #     management.call_command('js_reverse')
+    #     management.call_command('collectstatic_js_reverse')
 
     def run(self):
         self.stdout.write('\n######### %s #########' % self.urls_file)
@@ -261,8 +266,8 @@ class Command(BaseCommand):
         self.create_file(os.path.join(self.module_folder, 'api', '__init__.py'), '')
         self.stdout.write('\n######### %s #########' % self.serializers_file)
         self.create_file(self.serializers_file, self.get_api_serializers_content())
-        self.stdout.write('\n######### %s #########' % self.api_urls_file)
-        self.create_file(self.api_urls_file, self.get_api_urls_content())
+        # self.stdout.write('\n######### %s #########' % self.api_urls_file)
+        # self.create_file(self.api_urls_file, self.get_api_urls_content())
         self.stdout.write('\n######### %s #########' % self.api_views_file)
         self.create_file(self.api_views_file, self.get_api_views_content())
 
@@ -281,7 +286,7 @@ class Command(BaseCommand):
             self.stdout.write(content)
             self.create_file(list_template_file, content)
 
-        self.get_reverse_js()
+        # self.get_reverse_js()
         self.stdout.write('')
         self.stdout.write('')
         self.stderr.write('# Still need to add some codes manually:')
