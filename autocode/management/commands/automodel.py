@@ -8,7 +8,7 @@ from django.db import models
 from django.template.loader import get_template
 from django.utils.module_loading import import_string
 
-from autocode.autocode import find_models_by_app_name, code_groups, template_root
+from autocode.autocode import find_models_by_app_name, code_groups, template_root, find_model_by_name
 
 
 class Command(BaseCommand):
@@ -50,11 +50,16 @@ class Command(BaseCommand):
                     self.model_list.append(obj)
 
     def scan_models(self, module_name):
+        if module_name[0].isupper():
+            self.model_list += find_model_by_name(module_name)
+            return
+
         if '.' not in module_name and '/' not in module_name:
             self.model_list = find_models_by_app_name(module_name)
             self.app_name = module_name
             return
 
+        module_name = module_name if '.models' in module_name else module_name + '.models'
         mod = import_string(module_name)
         if isinstance(mod, types.ModuleType):
             self.module = mod
@@ -94,7 +99,7 @@ class Command(BaseCommand):
         self.is_overwrite = options.get("is_overwrite")
 
         self.module_str = self.path.replace('.py', '').replace('/', '.').strip('.')
-        self.module_str = self.module_str if '.models' in self.module_str else self.module_str + '.models'
+        # self.module_str = self.module_str if '.models' in self.module_str else self.module_str + '.models'
 
         try:
             self.scan_models(self.module_str)

@@ -3,6 +3,7 @@ import os
 from functools import reduce
 from importlib import import_module
 
+from django.apps import apps
 from django.db import models
 
 file_path = os.path.dirname(os.path.realpath(__file__))
@@ -12,6 +13,7 @@ code_groups = {
     'all': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html', 'api_views.py.html',
             'serializers.py.html', 'api_views.py.html', 'serializers.py.html'],
     'app': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
+    'api': ['serializers.py.html', 'api_views.py.html'],
     'views': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
     'templates': ['{model}_form.html', '{model}_list.html']
 }
@@ -21,8 +23,19 @@ py_files = ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html', '
             'serializers.py.html']
 
 
+def find_model_by_name(model_name):
+    all_models = apps.get_models()
+    model_list = []
+    if model_name[0].isupper():
+        for model in all_models:
+            if model.__name__ == model_name:
+                model_list.append(model)
+    return model_list
+
+
 def find_models_by_app_name(app_name):
-    module = import_module(f'{app_name}.models')
+    module_str = f'{app_name}.models' if not app_name.endswith('.models') else app_name
+    module = import_module(module_str)
 
     model_list = []
     for name, obj in inspect.getmembers(module, inspect.isclass):
