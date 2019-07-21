@@ -114,12 +114,24 @@ class Command(BaseCommand):
         context_data = self.get_context_data()
 
         for template_file in self.get_template_files():
-            print(os.path.basename(template_file).strip('.html'))
-            print('=' * 60)
-            template = get_template(template_file)
-            html = template.render(context_data)
-            print(self.unescape(html))
-            #todo template need loop models
+            file_name = os.path.basename(template_file)
+            if '{model}' in file_name:
+                file_name = os.path.basename(template_file)
+                for model in self.model_list:
+                    file_name = file_name.format(model=model.__name__)
+                    context_data['model'] = model
+
+                    print('=' * 20, file_name, '=' * 20)
+                    template = get_template(template_file)
+                    html = template.render(context_data)
+                    print(self.unescape(html))
+            else:
+                file_name = file_name.strip('.html')
+                print('=' * 20, file_name, '=' * 20)
+                template = get_template(template_file)
+                html = template.render(context_data)
+                print(self.unescape(html))
+            # todo template need loop models
         return
 
     def get_context_data(self):
