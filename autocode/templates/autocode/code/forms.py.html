@@ -2,6 +2,7 @@
 from .models import {{ models|list_models }}
 
 {% for model in models %}
+# --------------- {{ model|get_name }} Form ---------------
 class {{ model|get_name }}Form(forms.ModelForm):
     """ Add form for {{ model|get_name }} """
 

@@ -13,7 +13,7 @@ code_groups = {
             'serializers.py.html', 'api_views.py.html', 'serializers.py.html'],
     'app': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
     'views': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
-    'templates': ['{model_name}_form.html', '{model_name}_list.html']
+    'templates': ['{model}_form.html', '{model}_list.html']
 }
 all_templates = list(set(reduce(list.__add__, code_groups.values())))
 
