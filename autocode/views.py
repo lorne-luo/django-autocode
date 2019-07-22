@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.views.generic import TemplateView
 
-from autocode.autocode import find_models_by_app_path
+from autocode.autocode import find_models_by_app_path, find_models_by_app_name
 
 
 class BaseCodeView(TemplateView):
@@ -13,7 +13,7 @@ class BaseCodeView(TemplateView):
         if not app_name:
             raise Http404
 
-        model_list = find_models_by_app_path(app_name)
+        model_list = find_models_by_app_name(app_name)
 
         if model_name:
             model_list = list(filter(lambda x: x.__name__.lower() == model_name.lower(), model_list))
