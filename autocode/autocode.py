@@ -7,7 +7,7 @@ from django.apps import apps
 from django.db import models
 
 file_path = os.path.dirname(os.path.realpath(__file__))
-template_root = os.path.abspath(os.path.join(file_path, 'templates', 'autocode', 'code'))
+template_root = os.path.join('autocode', 'code')
 
 code_groups = {
     'all': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html', 'api_views.py.html',
@@ -33,7 +33,39 @@ def find_model_by_name(model_name):
     return model_list
 
 
+def import_model(module_str, mod):
+    result = []
+    for name, obj in inspect.getmembers(mod, inspect.isclass):
+        if obj.__module__.startswith(module_str):
+            if issubclass(obj, models.Model) and not obj._meta.abstract:
+                result.append(obj)
+    return result
+
+
 def find_models_by_app_name(app_name):
+    all_models = apps.get_models()
+    model_list = []
+    for model in all_models:
+        if model._meta.app_label == app_name:
+            model_list.append(model)
+    if model_list:
+        return model_list
+
+    for model in all_models:
+        if model.__name__ == app_name:
+            model_list.append(model)
+    if model_list:
+        return model_list
+
+    for model in all_models:
+        if model._meta.label == app_name:
+            model_list.append(model)
+    if model_list:
+        return model_list
+
+    return []
+
+def find_models_by_app_path(app_name):
     module_str = f'{app_name}.models' if not app_name.endswith('.models') else app_name
     module = import_module(module_str)
 

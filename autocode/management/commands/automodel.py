@@ -8,7 +8,8 @@ from django.db import models
 from django.template.loader import get_template
 from django.utils.module_loading import import_string
 
-from autocode.autocode import find_models_by_app_name, code_groups, template_root, find_model_by_name
+from autocode.autocode import find_models_by_app_path, code_groups, template_root, find_model_by_name, import_model, \
+    find_models_by_app_name
 
 
 class Command(BaseCommand):
@@ -34,9 +35,6 @@ class Command(BaseCommand):
     path = None
     file = None
 
-    # template = get_template(template_src)
-    # html = template.render(context_dict)
-
     def add_arguments(self, parser):
         parser.add_argument("--overwrite", "-o", action="store_true", dest="is_overwrite", default=False,
                             help="Overwrite all files.")
@@ -50,20 +48,15 @@ class Command(BaseCommand):
                     self.model_list.append(obj)
 
     def scan_models(self, module_name):
-        if module_name[0].isupper():
-            self.model_list += find_model_by_name(module_name)
-            return
+        self.model_list += find_models_by_app_name(module_name)
+        if self.model_list:
+            self.app_name = self.model_list[0]._meta.app_label
+            return self.model_list
 
-        if '.' not in module_name and '/' not in module_name:
-            self.model_list = find_models_by_app_name(module_name)
-            self.app_name = module_name
-            return
-
-        module_name = module_name if '.models' in module_name else module_name + '.models'
         mod = import_string(module_name)
         if isinstance(mod, types.ModuleType):
             self.module = mod
-            self.import_model(mod)
+            self.model_list += import_model(self.module_str, mod)
         elif issubclass(mod, models.Model):
             self.model_list.append(mod)
             self.module = sys.modules[mod.__module__]
@@ -73,20 +66,7 @@ class Command(BaseCommand):
         if not len(self.model_list):
             raise AttributeError('Found no model in %s' % module_name)
 
-        self.app_name = self.model_list[0]._meta.app_label
-        self.app_str = self.module_str[:self.module_str.find('.models')]
-        self.module_file = self.module.__file__[:-1]
-        self.module_folder = os.path.dirname(self.module.__file__)
-        self.serializers_file = os.path.join(self.module_folder, 'api', 'serializers.py')
-        self.api_urls_file = os.path.join(self.module_folder, 'api', 'urls.py')
-        self.api_views_file = os.path.join(self.module_folder, 'api', 'views.py')
-        self.views_file = os.path.join(self.module_folder, 'views.py')
-        self.urls_file = os.path.join(self.module_folder, 'urls.py')
-        self.forms_file = os.path.join(self.module_folder, 'forms.py')
-        self.js_folder = os.path.join(self.module_folder, 'static', 'js', self.app_name, '%s_list.js')
-        self.templates_folder = os.path.join(self.module_folder, 'templates', self.app_name, '%s_list.html')
-        self.menu_html_file = os.path.join(self.module_folder, 'templates', self.app_name, '_menu.html')
-        self.all_models_str = ', '.join([md.__name__ for md in self.model_list])
+        return self.model_list
 
     def handle(self, *args, **options):
         self.path = options.get("path")
