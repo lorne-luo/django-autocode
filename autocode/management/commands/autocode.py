@@ -8,7 +8,7 @@ from django.db import models
 from django.template.loader import get_template
 from django.utils.module_loading import import_string
 
-from autocode.autocode import find_models_by_app_path, code_groups, template_root, find_model_by_name, import_model, \
+from autocode.autocode import code_groups, template_root, import_model, \
     find_models_by_app_name
 
 
@@ -19,11 +19,11 @@ class Command(BaseCommand):
 
     Example:
 
-        ./manage.py code apps.product
+        python manage.py autocode auth
 
-        ./manage.py code -o apps.product.models.Product
+        python manage.py autocode auth.Group
 
-        ./manage.py code apps/product/
+        python manage.py autocode apps/product/
 
     '''
 
@@ -33,11 +33,22 @@ class Command(BaseCommand):
     is_overwrite = False
     app_name = None
     path = None
-    file = None
+    file = []
+    files = []
 
     def add_arguments(self, parser):
         parser.add_argument("--overwrite", "-o", action="store_true", dest="is_overwrite", default=False,
                             help="Overwrite all files.")
+
+        parser.add_argument("--view", "-vi", action="store_true", dest="is_view", default=False,
+                            help="Generate code for view")
+
+        parser.add_argument("--api", "-a", action="store_true", dest="is_api", default=False,
+                            help="Generate code for api")
+
+        parser.add_argument("--template", "-t", action="store_true", dest="is_template", default=False,
+                            help="Generate code for template")
+
         parser.add_argument('path', nargs='?', type=str)
         parser.add_argument('file', nargs='?', type=str, default='all')
 
@@ -68,7 +79,7 @@ class Command(BaseCommand):
 
         return self.model_list
 
-    def handle(self, *args, **options):
+    def parse_parameters(self, **options):
         self.path = options.get("path")
         self.file = options.get("file")
 
@@ -76,10 +87,23 @@ class Command(BaseCommand):
             self.stdout.write(f"File arguments should in {list(code_groups.keys())}")
             return
 
-        self.is_overwrite = options.get("is_overwrite")
+        if options.get("is_view"):
+            self.files.append('views')
+
+        if options.get("is_api"):
+            self.files.append('api')
+
+        if options.get("is_template"):
+            self.files.append('templates')
+
+        if not self.files:
+            self.files = ['all']
 
         self.module_str = self.path.replace('.py', '').replace('/', '.').strip('.')
         # self.module_str = self.module_str if '.models' in self.module_str else self.module_str + '.models'
+
+    def handle(self, *args, **options):
+        self.parse_parameters(**options)
 
         try:
             self.scan_models(self.module_str)
@@ -135,7 +159,13 @@ class Command(BaseCommand):
         return os.path.join(folder_path, 'autocode', 'code', 'api_views.py.html')
 
     def get_template_files(self):
-        return [os.path.join(template_root, file_name) for file_name in code_groups[self.file]]
+        templates = []
+        for file in self.files:
+            if file in code_groups:
+                templates += code_groups.get(file, [])
+
+        templates = list(set(templates))
+        return [os.path.join(template_root, file_name) for file_name in templates]
 
     def unescape(self, html):
         return html.replace('&lt;', '<').replace('&gt;', '>').replace('&quot;', '"').replace('&#39;', '\'').replace(
