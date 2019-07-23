@@ -1,7 +1,7 @@
 from django.http import Http404
 from django.views.generic import TemplateView
 
-from autocode.autocode import find_models_by_app_path, find_models_by_app_name
+from autocode.autocode import find_models_by_app_name
 
 
 class BaseCodeView(TemplateView):
@@ -19,6 +19,9 @@ class BaseCodeView(TemplateView):
             model_list = list(filter(lambda x: x.__name__.lower() == model_name.lower(), model_list))
             if not model_list:
                 raise Http404
+
+        if not model_list:
+            raise Exception('No models found with app_name=%s, model_name=%s' % (app_name, model_name))
 
         context['models'] = model_list
         context['models_fields'] = dict([(model.__name__, model._meta.fields)
