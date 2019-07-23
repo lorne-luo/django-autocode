@@ -31,11 +31,11 @@
     <h3 id="templates" class="clear">Templates</h3>
     <hr>
     {% for model in models %}
-      {% include 'autocode/code/{model}_form.html' with model=model %}
+      {% include 'autocode/code/{model}_form.html.html' with model=model %}
     {% endfor %}
 
     {% for model in models %}
-      {% include 'autocode/code/{model}_list.html' with model=model %}
+      {% include 'autocode/code/{model}_list.html.html' with model=model %}
     {% endfor %}
 
   </div>

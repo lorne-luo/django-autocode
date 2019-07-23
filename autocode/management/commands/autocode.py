@@ -127,16 +127,16 @@ class Command(BaseCommand):
             if '{model}' in file_name:
                 file_name = os.path.basename(template_file)
                 for model in self.model_list:
-                    file_name = file_name.format(model=model.__name__)
+                    file_name = file_name.format(model=model.__name__)[:-1*len('.html')]
                     context_data['model'] = model
 
-                    print('=' * 20, file_name, '=' * 20)
+                    print('=' * 20, file_name.lower(), '=' * 20)
                     template = get_template(template_file)
                     html = template.render(context_data)
                     print(self.unescape(html))
             else:
-                file_name = file_name.strip('.html')
-                print('=' * 20, file_name, '=' * 20)
+                file_name = file_name[:-1*len('.html')]
+                print('=' * 20, file_name.lower(), '=' * 20)
                 template = get_template(template_file)
                 html = template.render(context_data)
                 print(self.unescape(html))
