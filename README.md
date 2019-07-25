@@ -49,6 +49,8 @@ Example:
 
 `http://localhost/autocode/auth/Group/`
 
+Screenshot:
+
 ![](screenshots/browser.png)
 
 
@@ -67,6 +69,8 @@ Example:
 `python manage.py autocode auth.Group --api`
 
 `python manage.py autocode apps/product/ --template`
+
+Screenshot:
 
 ![](screenshots/commandline.png)
 
