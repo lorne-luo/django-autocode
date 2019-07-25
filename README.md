@@ -49,6 +49,8 @@ Example:
 
 `http://localhost/autocode/auth/Group/`
 
+![](screenshots/browser.png)
+
 
 ### 2. Django command
 
@@ -65,6 +67,8 @@ Example:
 `python manage.py autocode auth.Group --api`
 
 `python manage.py autocode apps/product/ --template`
+
+![](screenshots/commandline.png)
 
 
 ## Customize the code generation
