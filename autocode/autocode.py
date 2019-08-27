@@ -1,28 +1,27 @@
 import inspect
 import os
-import types
 from functools import reduce
 from importlib import import_module
 
 from django.apps import apps
 from django.db import models
-from django.utils.module_loading import import_string
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 template_root = os.path.join('autocode', 'code')
 
 code_groups = {
     'all': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html', 'api_views.py.html',
-            'serializers.py.html', 'api_views.py.html', 'serializers.py.html'],
+            'serializers.py.html', 'api_views.py.html', 'serializers.py.html', '{model}_form.html.html',
+            '{model}_list.html.html'],
     'app': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
     'api': ['serializers.py.html', 'api_views.py.html'],
     'views': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
     'templates': ['{model}_form.html.html', '{model}_list.html.html']
 }
 all_templates = list(set(reduce(list.__add__, code_groups.values())))
+code_groups['all'] = all_templates
 
-py_files = ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html', 'api_views.py.html',
-            'serializers.py.html']
+py_files = filter(lambda x: '.py.html' in x, all_templates)
 
 
 def find_model_by_name(model_name):
@@ -77,15 +76,15 @@ def find_models_by_app_name(app_name):
     if model_list:
         return model_list
 
-    model_name=''
+    model_name = ''
     if app_name.split('.')[-1][0].isupper():
-        model_name=app_name.split('.')[-1]
-        app_name=app_name.replace('.%s'% model_name,'')
-    print(app_name,model_name)
+        model_name = app_name.split('.')[-1]
+        app_name = app_name.replace('.%s' % model_name, '')
+    print(app_name, model_name)
     for model in all_models:
-        if model.__module__.startswith( app_name):
+        if model.__module__.startswith(app_name):
             if model_name:
-                if model_name ==model.__name__:
+                if model_name == model.__name__:
                     model_list.append(model)
             else:
                 model_list.append(model)

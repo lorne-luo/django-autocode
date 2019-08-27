@@ -123,11 +123,10 @@ class Command(BaseCommand):
         context_data = self.get_context_data()
 
         for template_file in self.get_template_files():
-            file_name = os.path.basename(template_file)
-            if '{model}' in file_name:
-                file_name = os.path.basename(template_file)
+            file_name_template = os.path.basename(template_file)[:-1*len('.html')]
+            if '{model}' in file_name_template:
                 for model in self.model_list:
-                    file_name = file_name.format(model=model.__name__)[:-1*len('.html')]
+                    file_name = file_name_template.format(model=model.__name__)
                     context_data['model'] = model
 
                     print('=' * 20, file_name.lower(), '=' * 20)
@@ -135,12 +134,11 @@ class Command(BaseCommand):
                     html = template.render(context_data)
                     print(self.unescape(html))
             else:
-                file_name = file_name[:-1*len('.html')]
+                file_name = file_name_template
                 print('=' * 20, file_name.lower(), '=' * 20)
                 template = get_template(template_file)
                 html = template.render(context_data)
                 print(self.unescape(html))
-            # todo template need loop models
         return
 
     def get_context_data(self):
