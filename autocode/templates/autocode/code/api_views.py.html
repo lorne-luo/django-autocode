@@ -1,12 +1,12 @@
 {% load autocode_tags %}from rest_framework import viewsets, permissions
 from . import serializers
-from ..models import {{ models|list_models }}
+from .models import {{ models|list_models }}
 
 {% for model in models %}
 class {{ model|get_name }}ViewSet(viewsets.ModelViewSet):
     """ViewSet for {{ model|get_name }} model"""
 
-    queryset = models.{{ model|get_name }}.objects.all()
+    queryset = {{ model|get_name }}.objects.all()
     serializer_class = serializers.{{ model|get_name }}Serializer
     permission_classes = [permissions.IsAuthenticated]
 

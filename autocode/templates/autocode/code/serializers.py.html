@@ -1,6 +1,6 @@
 {% load autocode_tags %}from django import forms
 from rest_framework import serializers
-from ..models import {{ models|list_models }}
+from .models import {{ models|list_models }}
 
 {% for model in models %}
 class {{ model|get_name }}Serializer(serializers.ModelSerializer):
