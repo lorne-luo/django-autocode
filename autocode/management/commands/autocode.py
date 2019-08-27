@@ -39,6 +39,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("--overwrite", "-o", action="store_true", dest="is_overwrite", default=False,
                             help="Overwrite all files.")
+        parser.add_argument("--write", "-w", action="store_true", dest="is_write", default=False,
+                            help="write all files.")
 
         parser.add_argument("--view", "-vi", action="store_true", dest="is_view", default=False,
                             help="Generate code for view")
@@ -96,6 +98,9 @@ class Command(BaseCommand):
         if options.get("is_template"):
             self.files.append('templates')
 
+        self.is_write = options.get("is_write")
+        self.is_overwrite = options.get("is_overwrite")
+
         if not self.files:
             self.files = ['all']
 
@@ -122,23 +127,32 @@ class Command(BaseCommand):
 
         context_data = self.get_context_data()
 
+        module_dir = os.path.join(*self.model_list[0].__module__.split('.')[:-1])
+
         for template_file in self.get_template_files():
-            file_name_template = os.path.basename(template_file)[:-1*len('.html')]
+            file_name_template = os.path.basename(template_file)[:-1 * len('.html')]
             if '{model}' in file_name_template:
                 for model in self.model_list:
-                    file_name = file_name_template.format(model=model.__name__)
+                    file_name = file_name_template.format(model=model.__name__.lower())
                     context_data['model'] = model
-
                     print('=' * 20, file_name.lower(), '=' * 20)
                     template = get_template(template_file)
-                    html = template.render(context_data)
-                    print(self.unescape(html))
+                    html = self.unescape(template.render(context_data))
+                    if self.is_write:
+                        path = self.write_file(module_dir, file_name, html)
+                        print(f'{file_name} write to {path}')
+                    else:
+                        print(html)
             else:
                 file_name = file_name_template
                 print('=' * 20, file_name.lower(), '=' * 20)
                 template = get_template(template_file)
-                html = template.render(context_data)
-                print(self.unescape(html))
+                html = self.unescape(template.render(context_data))
+                if self.is_write:
+                    path = self.write_file(module_dir, file_name, html)
+                    print(f'{file_name} write to {path}')
+                else:
+                    print(html)
         return
 
     def get_context_data(self):
@@ -149,6 +163,25 @@ class Command(BaseCommand):
                                    for model in self.model_list])
         }
         return context_data
+
+    def write_file(self, module_dir, filename, content):
+        if filename.endswith('.html'):
+            path = os.path.join(module_dir, 'templates', self.app_name, filename)
+        elif filename.endswith('.js'):
+            path = os.path.join(module_dir, 'static', self.app_name, filename)
+        else:
+            path = os.path.join(module_dir, filename)
+
+        if os.path.isfile(path) and not self.is_overwrite:
+            path += '.code'
+
+        base_dir = os.path.dirname(path)
+        if not os.path.exists(base_dir):
+            os.makedirs(base_dir)
+
+        with open(path, 'w+') as f:
+            f.write(content)
+        return path
 
     def get_template_path(self):
         file_path = os.path.dirname(os.path.realpath(__file__))
