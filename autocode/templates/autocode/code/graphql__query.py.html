@@ -1,0 +1,21 @@
+{% load autocode_tags %}import graphene
+import django_filters
+
+from graphene import Node
+from graphene_django import DjangoObjectType
+from ..models import {{ models|list_models }}
+
+{% for model in models %}
+class {{ model|get_name }}Filter(django_filters.FilterSet):
+    class Meta:
+        model = {{ model|get_name }}
+        fields = {{ model|list_field_names:True }}
+
+
+class {{ model|get_name }}Node(DjangoObjectType):
+    class Meta:
+        model = {{ model|get_name }}
+        interfaces = (Node,)
+        exclude_fields = ('is_archived',)
+        filterset_class = {{ model|get_name }}Filter
+{% endfor %}

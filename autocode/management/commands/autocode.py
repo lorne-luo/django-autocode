@@ -51,6 +51,9 @@ class Command(BaseCommand):
         parser.add_argument("--template", "-t", action="store_true", dest="is_template", default=False,
                             help="Generate code for template")
 
+        parser.add_argument("--graphql", "-g", action="store_true", dest="is_graphql", default=False,
+                            help="Generate code for graphql")
+
         parser.add_argument('path', nargs='?', type=str)
         parser.add_argument('file', nargs='?', type=str, default='all')
 
@@ -97,6 +100,9 @@ class Command(BaseCommand):
 
         if options.get("is_template"):
             self.files.append('templates')
+
+        if options.get("is_graphql"):
+            self.files.append('graphql')
 
         self.is_write = options.get("is_write")
         self.is_overwrite = options.get("is_overwrite")
@@ -166,11 +172,11 @@ class Command(BaseCommand):
 
     def write_file(self, module_dir, filename, content):
         if filename.endswith('.html'):
-            path = os.path.join(module_dir, 'templates', self.app_name, filename)
+            path = os.path.join(module_dir, 'templates', self.app_name, *filename.split('__'))
         elif filename.endswith('.js'):
-            path = os.path.join(module_dir, 'static', self.app_name, filename)
+            path = os.path.join(module_dir, 'static', self.app_name, *filename.split('__'))
         else:
-            path = os.path.join(module_dir, filename)
+            path = os.path.join(module_dir, *filename.split('__'))
 
         if os.path.isfile(path) and not self.is_overwrite:
             path += '.code'

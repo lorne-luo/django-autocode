@@ -1,0 +1,50 @@
+{% load autocode_tags %}import json
+import graphene
+from graphene import ClientIDMutation, InputObjectType
+from core.django.graphql import BaseMutationMixin, UpdateMutationMixin, CreateMutationMixin, DeleteMutationMixin
+from ..models import {{ models|list_models }}
+from .query import {% for model in models %}{{ model|get_name }}Node{% if not forloop.last %}, {% endif %}{% endfor %}
+
+{% for model in models %}
+class {{ model|get_name }}CreateInput(InputObjectType):{% for field in model|get_fields_no_pk %}
+    {{ field.name }} = graphene.{{ field|get_graphql_type }}(required=False){% endfor %}
+
+class Create{{ model|get_name }}Mutation(CreateMutationMixin, ClientIDMutation):
+    model = {{ model|get_name }}
+    {{ model|get_name|lower }} = graphene.Field({{ model|get_name }}Node)
+
+    class Input:
+        {{ model|get_name|lower }} = graphene.Argument({{ model|get_name }}CreateInput)
+
+    @classmethod
+    # @BaseMutationMixin.login_required_mutation
+    def mutate_and_get_payload(cls, root, info, **inputs):
+        return super(Create{{ model|get_name }}Mutation, cls).mutate_and_get_payload(root, info, **inputs)
+
+
+class Update{{ model|get_name }}Mutation(UpdateMutationMixin, ClientIDMutation):
+    model = {{ model|get_name }}
+    {{ model|get_name|lower }} = graphene.Field({{ model|get_name }}Node)
+
+    class Input:
+        id = graphene.ID()
+        {{ model|get_name|lower }} = graphene.Argument({{ model|get_name }}CreateInput)
+
+    @classmethod
+    # @BaseMutationMixin.login_required_mutation
+    def mutate_and_get_payload(cls, root, info, **inputs):
+        return super(Update{{ model|get_name }}Mutation, cls).mutate_and_get_payload(root, info, **inputs)
+
+
+class Delete{{ model|get_name }}Mutation(DeleteMutationMixin, ClientIDMutation):
+    model = {{ model|get_name }}
+    {{ model|get_name|lower }} = graphene.Field({{ model|get_name }}Node)
+
+    class Input:
+        id = graphene.ID()
+
+    @classmethod
+    # @BaseMutationMixin.login_required_mutation
+    def mutate_and_get_payload(cls, root, info, **inputs):
+        return super(Delete{{ model|get_name }}Mutation, cls).mutate_and_get_payload(root, info, **inputs)
+{% endfor %}

@@ -1,3 +1,5 @@
+from functools import partial
+
 from django import template
 from django.utils.text import re_camel_case
 
@@ -43,9 +45,45 @@ def list_field_names(model, ignore_pk=False):
     return '["%s"]' % '", "'.join([f.name for f in model._meta.fields])
 
 
+@register.filter(name='list_field_names_no_pk')
+def list_field_names_no_pk(model, ignore_pk=False):
+    return '["%s"]' % '", "'.join([f.name for f in model._meta.fields if f.name not in ['pk', 'id']])
+
+
 @register.filter(name='get_fields')
 def get_fields(model, ignore_pk=False):
     if ignore_pk:
         return [x for x in model._meta.fields if x.name not in ['id', 'pk']]
 
     return model._meta.fields
+
+
+@register.filter(name='get_fields_no_pk')
+def get_fields_no_pk(model):
+    return [x for x in model._meta.fields if x.name not in ['id', 'pk']]
+
+
+@register.filter(name='get_graphql_type')
+def get_graphql_type(field):
+    type_name = field.__class__.__name__
+    django_graphql_type_maps = {
+        'AutoField': 'ID',
+        'CharField': 'String',
+        'TextField': 'String',
+        'DateField': 'String',
+        'DateTimeField': 'String',
+        'TimeField': 'String',
+        'EmailField': 'String',
+        'FileField': 'String',
+        'ImageField': 'String',
+        'URLField': 'String',
+        'UUIDField': 'String',
+        'IntegerField': 'Int',
+        'SmallIntegerField': 'Int',
+        'BigegerField': 'Int',
+        'FloatField': 'Float',
+        'BooleanField': 'Boolean',
+        'NullBooleanField': 'Boolean',
+    }
+
+    return django_graphql_type_maps.get(type_name, 'NameError')
