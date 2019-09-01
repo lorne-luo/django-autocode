@@ -47,4 +47,5 @@ class Delete{{ model|get_name }}Mutation(DeleteMutationMixin, ClientIDMutation):
     # @BaseMutationMixin.login_required_mutation
     def mutate_and_get_payload(cls, root, info, **inputs):
         return super(Delete{{ model|get_name }}Mutation, cls).mutate_and_get_payload(root, info, **inputs)
+
 {% endfor %}
