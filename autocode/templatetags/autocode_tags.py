@@ -82,6 +82,7 @@ def get_graphql_type(field):
         'SmallIntegerField': 'Int',
         'BigegerField': 'Int',
         'FloatField': 'Float',
+        'DecimalField': 'Float',
         'BooleanField': 'Boolean',
         'NullBooleanField': 'Boolean',
     }
