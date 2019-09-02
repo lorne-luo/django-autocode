@@ -6,6 +6,8 @@ from ..models import {{ models|list_models }}
 from .query import {% for model in models %}{{ model|get_name }}Node{% if not forloop.last %}, {% endif %}{% endfor %}
 
 {% for model in models %}
+# ================================================================================================ {{ model|get_name }}
+
 class {{ model|get_name }}CreateInput(InputObjectType):{% for field in model|get_fields_no_pk %}
     {{ field.name }} = graphene.{{ field|get_graphql_type }}(required=False){% endfor %}
 

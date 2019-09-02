@@ -5,7 +5,7 @@ from .mutation import {% for model in models %}Create{{ model|get_name }}Mutatio
 from .query import {% for model in models %}{{ model|get_name }}Node{% if not forloop.last %}, {% endif %}{% endfor %}
 
 
-class Mutation(graphene.AbstractType):{% for model in models %}
+class Mutation(graphene.ObjectType):{% for model in models %}
     create_{{ model|get_name|lower }} = Create{{ model|get_name }}Mutation.Field()
     update_{{ model|get_name|lower }} = Update{{ model|get_name }}Mutation.Field()
     delete_{{ model|get_name|lower }} = Delete{{ model|get_name }}Mutation.Field()
