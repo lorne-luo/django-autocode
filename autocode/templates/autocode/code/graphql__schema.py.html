@@ -6,12 +6,12 @@ from .query import {% for model in models %}{{ model|get_name }}Node{% if not fo
 
 
 class Mutation(graphene.ObjectType):{% for model in models %}
-    create_{{ model|get_name|lower }} = Create{{ model|get_name }}Mutation.Field()
-    update_{{ model|get_name|lower }} = Update{{ model|get_name }}Mutation.Field()
-    delete_{{ model|get_name|lower }} = Delete{{ model|get_name }}Mutation.Field()
+    create_{{ model|get_name|snake_case }} = Create{{ model|get_name }}Mutation.Field()
+    update_{{ model|get_name|snake_case }} = Update{{ model|get_name }}Mutation.Field()
+    delete_{{ model|get_name|snake_case }} = Delete{{ model|get_name }}Mutation.Field()
 {% endfor %}
 
 class Query(graphene.ObjectType):{% for model in models %}
-    {{ model|get_name|lower }} = Node.Field({{ model|get_name }}Node)
-    all_{{ model|get_name|lower }} = DjangoFilterConnectionField({{ model|get_name }}Node)
+    {{ model|get_name|snake_case }} = Node.Field({{ model|get_name }}Node)
+    all_{{ model|get_name|snake_case }} = DjangoFilterConnectionField({{ model|get_name }}Node)
 {% endfor %}

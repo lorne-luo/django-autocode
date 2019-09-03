@@ -1,7 +1,6 @@
-from functools import partial
-
 from django import template
 from django.utils.text import re_camel_case
+from stringcase import snakecase
 
 register = template.Library()
 
@@ -88,3 +87,8 @@ def get_graphql_type(field):
     }
 
     return django_graphql_type_maps.get(type_name, 'NameError')
+
+
+@register.filter(name='snake_case')
+def snake_case(string):
+    return snakecase(str(string))
