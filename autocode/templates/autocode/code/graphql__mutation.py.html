@@ -1,15 +1,19 @@
 {% load autocode_tags %}import json
 import graphene
 from graphene import ClientIDMutation, InputObjectType
-from core.django.graphql import BaseMutationMixin, UpdateMutationMixin, CreateMutationMixin, DeleteMutationMixin
+from core.django.graphql import UpdateMutationMixin, CreateMutationMixin, DeleteMutationMixin
 from ..models import {{ models|list_models }}
 from .query import {% for model in models %}{{ model|get_name }}Node{% if not forloop.last %}, {% endif %}{% endfor %}
 
 {% for model in models %}
-# ================================================================================================ {{ model|get_name }}
+# ========================================================================================= {{ model|get_name }}
 
 class {{ model|get_name }}CreateInput(InputObjectType):{% for field in model|get_fields_no_pk %}
     {{ field.name }} = graphene.{{ field|get_graphql_type }}(required=False){% endfor %}
+
+
+class {{ model|get_name }}UpdateInput({{ model|get_name }}CreateInput):
+    pass
 
 class Create{{ model|get_name }}Mutation(CreateMutationMixin, ClientIDMutation):
     model = {{ model|get_name }}
@@ -25,7 +29,7 @@ class Update{{ model|get_name }}Mutation(UpdateMutationMixin, ClientIDMutation):
 
     class Input:
         id = graphene.ID()
-        {{ model|get_name|snake_case }} = graphene.Argument({{ model|get_name }}CreateInput)
+        {{ model|get_name|snake_case }} = graphene.Argument({{ model|get_name }}UpdateInput)
 
 
 class Delete{{ model|get_name }}Mutation(DeleteMutationMixin, ClientIDMutation):

@@ -6,6 +6,7 @@ from graphene_django import DjangoObjectType
 from ..models import {{ models|list_models }}
 
 {% for model in models %}
+# ========================================================================================= {{ model|get_name }}
 class {{ model|get_name }}Filter(django_filters.FilterSet):
     class Meta:
         model = {{ model|get_name }}
