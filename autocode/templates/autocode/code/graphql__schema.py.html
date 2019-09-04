@@ -1,7 +1,7 @@
 {% load autocode_tags %}import graphene
 from graphene import Node
 from graphene_django.filter import DjangoFilterConnectionField
-from .mutation import {% for model in models %}Create{{ model|get_name }}Mutation, Update{{ model|get_name }}Mutation, Delete{{ model|get_name }}Mutation{% if not forloop.last %}, {% endif %}{% endfor %}
+from .mutation import ({% for model in models %}Create{{ model|get_name }}Mutation, Update{{ model|get_name }}Mutation, Delete{{ model|get_name }}Mutation{% if not forloop.last %}, {% endif %}{% endfor %})
 from .query import {% for model in models %}{{ model|get_name }}Node{% if not forloop.last %}, {% endif %}{% endfor %}
 
 
