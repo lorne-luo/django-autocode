@@ -1,7 +1,7 @@
 {% load autocode_tags %}import json
 import graphene
 from graphene import ClientIDMutation, InputObjectType
-from core.django.graphql import UpdateMutationMixin, CreateMutationMixin, DeleteMutationMixin
+from core.django.graphql.mutation import UpdateMutationMixin, CreateMutationMixin, DeleteMutationMixin
 from ..models import {{ models|list_models }}
 from .query import {% for model in models %}{{ model|get_name }}Node{% if not forloop.last %}, {% endif %}{% endfor %}
 

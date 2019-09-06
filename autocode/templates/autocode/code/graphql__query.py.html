@@ -16,7 +16,9 @@ class {{ model|get_name }}Filter(django_filters.FilterSet):
 class {{ model|get_name }}Node(DjangoObjectType):
     class Meta:
         model = {{ model|get_name }}
+        convert_choices_to_enum = True
         interfaces = (Node,)
         exclude_fields = ('is_archived',)
         filterset_class = {{ model|get_name }}Filter
+
 {% endfor %}
