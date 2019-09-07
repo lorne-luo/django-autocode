@@ -139,23 +139,23 @@ class Command(BaseCommand):
             file_name_template = os.path.basename(template_file)[:-1 * len('.html')]
             if '{model}' in file_name_template:
                 for model in self.model_list:
-                    file_name = file_name_template.format(model=model.__name__.lower())
+                    file_name = file_name_template.format(model=model.__name__.lower(), module=self.app_name)
                     context_data['model'] = model
-                    print('=' * 20, file_name.lower(), '=' * 20)
+                    print('=' * 20, file_name.lower().split('__')[-1], '=' * 20)
                     template = get_template(template_file)
                     html = self.unescape(template.render(context_data))
                     if self.is_write:
-                        path = self.write_file(module_dir, file_name, html)
+                        path = self.write_file(module_dir, model, file_name, html)
                         print(f'{file_name} write to {path}')
                     else:
                         print(html)
             else:
                 file_name = file_name_template
-                print('=' * 20, file_name.lower(), '=' * 20)
+                print('=' * 20, file_name.lower().split('__')[-1], '=' * 20)
                 template = get_template(template_file)
                 html = self.unescape(template.render(context_data))
                 if self.is_write:
-                    path = self.write_file(module_dir, file_name, html)
+                    path = self.write_file(module_dir, model, file_name, html)
                     print(f'{file_name} write to {path}')
                 else:
                     print(html)
@@ -170,13 +170,9 @@ class Command(BaseCommand):
         }
         return context_data
 
-    def write_file(self, module_dir, filename, content):
-        if filename.endswith('.html'):
-            path = os.path.join(module_dir, 'templates', self.app_name, *filename.split('__'))
-        elif filename.endswith('.js'):
-            path = os.path.join(module_dir, 'static', self.app_name, *filename.split('__'))
-        else:
-            path = os.path.join(module_dir, *filename.split('__'))
+    def write_file(self, module_dir, model, filename, content):
+        filename = filename.format(model=model.__name__.lower(), module=self.app_name)
+        path = os.path.join(module_dir, *filename.split('__'))
 
         if os.path.isfile(path) and not self.is_overwrite:
             path += '.code'

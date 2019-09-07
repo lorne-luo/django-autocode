@@ -10,13 +10,10 @@ file_path = os.path.dirname(os.path.realpath(__file__))
 template_root = os.path.join('autocode', 'code')
 
 code_groups = {
-    'all': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html', 'api_views.py.html',
-            'serializers.py.html', 'api_views.py.html', 'serializers.py.html', '{model}_form.html.html',
-            '{model}_list.html.html'],
     'app': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
-    'api': ['serializers.py.html', 'api_views.py.html'],
+    'api': ['api__serializers.py.html', 'api__views.py.html'],
     'views': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
-    'templates': ['{model}_form.html.html', '{model}_list.html.html'],
+    'templates': ['templates__{module}__{model}_form.html.html', 'templates__{module}__{model}_list.html.html'],
     'graphql': ['graphql__schema.py.html', 'graphql__query.py.html', 'graphql__mutation.py.html']
 }
 all_templates = list(set(reduce(list.__add__, code_groups.values())))

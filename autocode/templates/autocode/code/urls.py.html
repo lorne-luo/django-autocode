@@ -1,16 +1,19 @@
 {% load autocode_tags %}from django.urls import path, include
 from rest_framework import routers
 
-from . import views, api_views
+from . import views
+from .api import api_views
 
 router = routers.DefaultRouter()
 {% for model in models %}
 router.register(r'{{ model|get_var }}', api_views.{{ model|get_name }}ViewSet){% endfor %}
 
+
 urlpatterns = (
     # urls for Django Rest Framework API
     path('api/v1/', include(router.urls)),
 )
+
 {% for model in models %}
 urlpatterns += (
     # urls for {{ model|get_name }}
