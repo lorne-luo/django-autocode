@@ -20,7 +20,7 @@ class Create{{ model|get_name }}Mutation(CreateMutationMixin, ClientIDMutation):
     {{ model|get_name|snake_case }} = graphene.Field({{ model|get_name }}Node)
 
     class Input:
-        {{ model|get_name|snake_case }} = graphene.Argument({{ model|get_name }}CreateInput)
+        {{ model|get_name|snake_case }} = graphene.Argument({{ model|get_name }}CreateInput, required=True)
 
 
 class Update{{ model|get_name }}Mutation(UpdateMutationMixin, ClientIDMutation):
@@ -29,7 +29,7 @@ class Update{{ model|get_name }}Mutation(UpdateMutationMixin, ClientIDMutation):
 
     class Input:
         id = graphene.ID(required=True)
-        {{ model|get_name|snake_case }} = graphene.Argument({{ model|get_name }}UpdateInput)
+        {{ model|get_name|snake_case }} = graphene.Argument({{ model|get_name }}UpdateInput, required=True)
 
 
 class Delete{{ model|get_name }}Mutation(DeleteMutationMixin, ClientIDMutation):
