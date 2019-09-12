@@ -80,6 +80,9 @@ def find_models_by_app_name(app_name):
         app_name = app_name.replace('.%s' % model_name, '')
     print(app_name, model_name)
     for model in all_models:
+        if model._meta.abstract:
+            continue
+
         if model.__module__.startswith(app_name):
             if model_name:
                 if model_name == model.__name__:
