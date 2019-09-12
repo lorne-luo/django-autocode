@@ -145,7 +145,7 @@ class Command(BaseCommand):
                     template = get_template(template_file)
                     html = self.unescape(template.render(context_data))
                     if self.is_write:
-                        path = self.write_file(module_dir, model, file_name, html)
+                        path = self.write_file(module_dir, file_name, html, model)
                         print(f'{file_name} write to {path}')
                     else:
                         print(html)
@@ -155,7 +155,7 @@ class Command(BaseCommand):
                 template = get_template(template_file)
                 html = self.unescape(template.render(context_data))
                 if self.is_write:
-                    path = self.write_file(module_dir, model, file_name, html)
+                    path = self.write_file(module_dir, file_name, html)
                     print(f'{file_name} write to {path}')
                 else:
                     print(html)
@@ -170,8 +170,9 @@ class Command(BaseCommand):
         }
         return context_data
 
-    def write_file(self, module_dir, model, filename, content):
-        filename = filename.format(model=model.__name__.lower(), module=self.app_name)
+    def write_file(self, module_dir, filename, content, model=None):
+        model_name = model.__name__.lower() if None else ''
+        filename = filename.format(model=model_name, module=self.app_name)
         path = os.path.join(module_dir, *filename.split('__'))
 
         if os.path.isfile(path) and not self.is_overwrite:
