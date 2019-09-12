@@ -1,6 +1,6 @@
 from django import template
 from django.utils.text import re_camel_case
-from stringcase import snakecase
+import stringcase
 
 register = template.Library()
 
@@ -89,6 +89,11 @@ def get_graphql_type(field):
     return django_graphql_type_maps.get(type_name, 'NameError')
 
 
-@register.filter(name='snake_case')
-def snake_case(string):
-    return snakecase(str(string))
+@register.filter(name='snakecase')
+def snakecase(string):
+    return stringcase.snakecase(str(string))
+
+
+@register.filter(name='camelcase')
+def camelcase(string):
+    return stringcase.camelcase(str(string))

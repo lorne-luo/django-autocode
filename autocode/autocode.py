@@ -14,7 +14,8 @@ code_groups = {
     'api': ['api__serializers.py.html', 'api__views.py.html'],
     'views': ['views.py.html', 'admin.py.html', 'forms.py.html', 'urls.py.html'],
     'templates': ['templates__{module}__{model}_form.html.html', 'templates__{module}__{model}_list.html.html'],
-    'graphql': ['graphql__schema.py.html', 'graphql__query.py.html', 'graphql__mutation.py.html']
+    'graphql': ['graphql__schema.py.html', 'graphql__query.py.html', 'graphql__mutation.py.html'],
+    'tests': ['tests__test_query.py.html', 'tests__test_mutation.py.html']
 }
 all_templates = list(set(reduce(list.__add__, code_groups.values())))
 code_groups['all'] = all_templates

@@ -54,6 +54,9 @@ class Command(BaseCommand):
         parser.add_argument("--graphql", "-g", action="store_true", dest="is_graphql", default=False,
                             help="Generate code for graphql")
 
+        parser.add_argument("--tests", "-te", action="store_true", dest="is_tests", default=False,
+                            help="Generate test code")
+
         parser.add_argument('path', nargs='?', type=str)
         parser.add_argument('file', nargs='?', type=str, default='all')
 
@@ -103,6 +106,10 @@ class Command(BaseCommand):
 
         if options.get("is_graphql"):
             self.files.append('graphql')
+
+
+        if options.get("is_tests"):
+            self.files.append('tests')
 
         self.is_write = options.get("is_write")
         self.is_overwrite = options.get("is_overwrite")

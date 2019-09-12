@@ -17,19 +17,19 @@ class {{ model|get_name }}UpdateInput({{ model|get_name }}CreateInput):
 
 class Create{{ model|get_name }}Mutation(CreateMutationMixin, ClientIDMutation):
     model = {{ model|get_name }}
-    {{ model|get_name|snake_case }} = graphene.Field({{ model|get_name }}Node)
+    {{ model|get_name|snakecase }} = graphene.Field({{ model|get_name }}Node)
 
     class Input:
-        {{ model|get_name|snake_case }} = graphene.Argument({{ model|get_name }}CreateInput, required=True)
+        {{ model|get_name|snakecase }} = graphene.Argument({{ model|get_name }}CreateInput, required=True)
 
 
 class Update{{ model|get_name }}Mutation(UpdateMutationMixin, ClientIDMutation):
     model = {{ model|get_name }}
-    {{ model|get_name|snake_case }} = graphene.Field({{ model|get_name }}Node)
+    {{ model|get_name|snakecase }} = graphene.Field({{ model|get_name }}Node)
 
     class Input:
         id = graphene.ID(required=True)
-        {{ model|get_name|snake_case }} = graphene.Argument({{ model|get_name }}UpdateInput, required=True)
+        {{ model|get_name|snakecase }} = graphene.Argument({{ model|get_name }}UpdateInput, required=True)
 
 
 class Delete{{ model|get_name }}Mutation(DeleteMutationMixin, ClientIDMutation):
