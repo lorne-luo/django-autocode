@@ -125,3 +125,25 @@ def get_fields_and_labels(model):
             title = title.title()
         titles.append(title)
     return fields, titles
+
+
+def get_template_dirs():
+    # todo draft
+
+    from django.template import engines
+    engines_list = engines.all()
+
+    template_root = reduce(list.__add__, [en.dirs for en in engines_list])
+    template_root=tuple(template_root)
+
+    app_templates = reduce(list.__add__, [en.template_dirs for en in engines_list])
+
+    #reduce duplicated
+
+
+
+    for engine in engines_list:
+        print(engine.template_dirs)
+
+    from django.template.loader import get_template
+    from django.template.loaders.app_directories import get_app_template_dirs
