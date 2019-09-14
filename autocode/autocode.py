@@ -1,10 +1,12 @@
 import inspect
 import os
+from collections import defaultdict
 from functools import reduce
 from importlib import import_module
 
 from django.apps import apps
 from django.db import models
+from django.template import engines
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 template_root = os.path.join('autocode', 'code')
@@ -17,10 +19,7 @@ code_groups = {
     'graphql': ['graphql__schema.py.html', 'graphql__query.py.html', 'graphql__mutation.py.html'],
     'tests': ['tests__test_query.py.html', 'tests__test_mutation.py.html']
 }
-all_templates = list(set(reduce(list.__add__, code_groups.values())))
-code_groups['all'] = all_templates
-
-py_files = filter(lambda x: '.py.html' in x, all_templates)
+code_groups['__all__'] = list(set(reduce(list.__add__, code_groups.values())))
 
 
 def find_model_by_name(model_name):
@@ -127,23 +126,46 @@ def get_fields_and_labels(model):
     return fields, titles
 
 
-def get_template_dirs():
-    # todo draft
-
-    from django.template import engines
+def get_template_dirs(app_name):
     engines_list = engines.all()
+    template_roots = reduce(list.__add__, [en.dirs for en in engines_list])
 
-    template_root = reduce(list.__add__, [en.dirs for en in engines_list])
-    template_root=tuple(template_root)
+    app_template_list = reduce(list.__add__, [en.template_dirs for en in engines_list])
+    get_app = lambda x: x.rsplit(os.path.sep, 2)[-2]
+    app_templates = dict([(get_app(temp), temp) for temp in app_template_list if temp not in template_roots])
 
-    app_templates = reduce(list.__add__, [en.template_dirs for en in engines_list])
+    file_path = os.path.dirname(os.path.realpath(__file__))
+    default_template = os.path.abspath(os.path.join(file_path, 'templates'))
+    template_roots += [default_template]
 
-    #reduce duplicated
+    if app_templates.get(app_name):
+        template_roots = [app_templates.get(app_name)] + template_roots
+
+    return tuple(template_roots)
 
 
+def list_template_file(app_name):
+    template_dirs = get_template_dirs(app_name)
+    sub_path = os.path.join('autocode', 'code')
+    templates = {}
+    for temp in template_dirs:
+        path = os.path.join(temp, sub_path)
+        for file in os.listdir(path):
+            if file.endswith(".html"):
+                if file not in templates:
+                    templates[file] = os.path.join(path, file)
 
-    for engine in engines_list:
-        print(engine.template_dirs)
+    return templates
 
-    from django.template.loader import get_template
-    from django.template.loaders.app_directories import get_app_template_dirs
+
+def get_code_groups(app_name):
+    splitter = '__'
+    templates = list_template_file(app_name)
+    result = defaultdict(lambda: [])
+
+    for file_name, path in templates.items():
+        folder = file_name.split(splitter)[0] if splitter in file_name else '__root__'
+        result[folder] += [path]
+        result['__all__'] += [path]
+
+    return result

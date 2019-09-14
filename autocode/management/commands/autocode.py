@@ -8,8 +8,7 @@ from django.db import models
 from django.template.loader import get_template
 from django.utils.module_loading import import_string
 
-from autocode.autocode import code_groups, template_root, import_model, \
-    find_models_by_app_name
+from autocode.autocode import import_model, find_models_by_app_name, get_code_groups
 
 
 class Command(BaseCommand):
@@ -35,6 +34,7 @@ class Command(BaseCommand):
     path = None
     file = []
     files = []
+    template_folders = {}
 
     def add_arguments(self, parser):
         parser.add_argument("--overwrite", "-o", action="store_true", dest="is_overwrite", default=False,
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                             help="Generate test code")
 
         parser.add_argument('path', nargs='?', type=str)
-        parser.add_argument('file', nargs='?', type=str, default='all')
+        parser.add_argument('file', nargs='?', type=str, default='__all__')
 
     def import_model(self, mod):
         for name, obj in inspect.getmembers(mod, inspect.isclass):
@@ -91,9 +91,9 @@ class Command(BaseCommand):
         self.path = options.get("path")
         self.file = options.get("file")
 
-        if self.file not in code_groups:
-            self.stdout.write(f"File arguments should in {list(code_groups.keys())}")
-            return
+        # if self.file not in code_groups:
+        #     self.stdout.write(f"File arguments should in {list(code_groups.keys())}")
+        #     return
 
         if options.get("is_view"):
             self.files.append('views')
@@ -107,7 +107,6 @@ class Command(BaseCommand):
         if options.get("is_graphql"):
             self.files.append('graphql')
 
-
         if options.get("is_tests"):
             self.files.append('tests')
 
@@ -115,7 +114,7 @@ class Command(BaseCommand):
         self.is_overwrite = options.get("is_overwrite")
 
         if not self.files:
-            self.files = ['all']
+            self.files = ['__all__']
 
         self.module_str = self.path.replace('.py', '').replace('/', '.').strip('.')
         # self.module_str = self.module_str if '.models' in self.module_str else self.module_str + '.models'
@@ -138,17 +137,20 @@ class Command(BaseCommand):
         else:
             self.app_name = self.model_list[0]._meta.app_label
 
+        self.template_folders = get_code_groups(self.app_name)
+
         context_data = self.get_context_data()
 
         module_dir = os.path.join(*self.model_list[0].__module__.split('.')[:-1])
 
         for template_file in self.get_template_files():
             file_name_template = os.path.basename(template_file)[:-1 * len('.html')]
+
             if '{model}' in file_name_template:
                 for model in self.model_list:
                     file_name = file_name_template.format(model=model.__name__.lower(), module=self.app_name)
                     context_data['model'] = model
-                    print('=' * 20, file_name.lower().split('__')[-1], '=' * 20)
+                    print('=' * 20, file_name.replace('__', os.path.sep), '=' * 20)
                     template = get_template(template_file)
                     html = self.unescape(template.render(context_data))
                     if self.is_write:
@@ -158,7 +160,8 @@ class Command(BaseCommand):
                         print(html)
             else:
                 file_name = file_name_template
-                print('=' * 20, file_name.lower().split('__')[-1], '=' * 20)
+                print('=' * 20, file_name.replace('__', os.path.sep), '=' * 20)
+                print(template_file)
                 template = get_template(template_file)
                 html = self.unescape(template.render(context_data))
                 if self.is_write:
@@ -202,11 +205,10 @@ class Command(BaseCommand):
     def get_template_files(self):
         templates = []
         for file in self.files:
-            if file in code_groups:
-                templates += code_groups.get(file, [])
+            templates += self.template_folders.get(file, [])
 
-        templates = list(set(templates))
-        return [os.path.join(template_root, file_name) for file_name in templates]
+        print(templates)
+        return templates
 
     def unescape(self, html):
         return html.replace('&lt;', '<').replace('&gt;', '>').replace('&quot;', '"').replace('&#39;', '\'').replace(
