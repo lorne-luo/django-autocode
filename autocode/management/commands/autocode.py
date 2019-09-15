@@ -79,6 +79,9 @@ class Command(BaseCommand):
         self.is_write = options.get("is_write")
         self.is_overwrite = options.get("is_overwrite")
 
+        if not self.path:
+            return
+
         if options.get("folder"):
             if options.get("folder") in ['all', 'root']:
                 self.folder.append(f'__{options.get("folder")}__')
@@ -92,6 +95,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.parse_parameters(**options)
+
+        if not self.path:
+            self.stdout.write(self.style.ERROR(f"Please input a app name."))
+            return
 
         try:
             self.scan_models(self.module_str)
@@ -138,7 +145,6 @@ class Command(BaseCommand):
             else:
                 file_name = file_name_template
                 print('=' * 20, file_name.replace('__', os.path.sep), '=' * 20)
-                print(template_file)
                 template = get_template(template_file)
                 html = self.unescape(template.render(context_data))
                 if self.is_write:

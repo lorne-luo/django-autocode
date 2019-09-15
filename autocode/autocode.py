@@ -78,7 +78,7 @@ def find_models_by_app_name(app_name):
     if app_name.split('.')[-1][0].isupper():
         model_name = app_name.split('.')[-1]
         app_name = app_name.replace('.%s' % model_name, '')
-    print(app_name, model_name)
+
     for model in all_models:
         if model._meta.abstract:
             continue
@@ -150,6 +150,9 @@ def list_template_file(app_name):
     templates = {}
     for temp in template_dirs:
         path = os.path.join(temp, sub_path)
+        if not os.path.isdir(path):
+            continue
+
         for file in os.listdir(path):
             if file.endswith(".html"):
                 if file not in templates:
