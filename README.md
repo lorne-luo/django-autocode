@@ -56,19 +56,19 @@ Screenshot:
 
 ### 2. Django command
 
-`python manage.py autocode {app name} [--view, --api, --template]`
+`python manage.py autocode {app name} [--folder {folder name}]`
 
-`python manage.py autocode {app name}.{model name} [--view, --api, --template]`
+`python manage.py autocode {app name}.{model name} [--folder {folder name}]`
 
-`python manage.py autocode {app folder path} [--view, --api, --template]`
+`python manage.py autocode {app folder path} [--folder {folder name}]`
 
 Example:
 
 `python manage.py autocode auth`
 
-`python manage.py autocode auth.Group --api`
+`python manage.py autocode auth.Group --folder tests`
 
-`python manage.py autocode apps/product/ --template`
+`python manage.py autocode apps/product/ -f templates`
 
 Screenshot:
 
