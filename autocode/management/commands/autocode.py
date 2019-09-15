@@ -32,33 +32,20 @@ class Command(BaseCommand):
     is_overwrite = False
     app_name = None
     path = None
-    file = []
-    files = []
+    folder = []
     template_folders = {}
 
     def add_arguments(self, parser):
+        parser.add_argument("--folder", "-f", dest="folder", default='__all__',
+                            help="Generate code for specific folder.")
+
         parser.add_argument("--overwrite", "-o", action="store_true", dest="is_overwrite", default=False,
                             help="Overwrite all files.")
+
         parser.add_argument("--write", "-w", action="store_true", dest="is_write", default=False,
                             help="write all files.")
 
-        parser.add_argument("--view", "-vi", action="store_true", dest="is_view", default=False,
-                            help="Generate code for view")
-
-        parser.add_argument("--api", "-a", action="store_true", dest="is_api", default=False,
-                            help="Generate code for api")
-
-        parser.add_argument("--template", "-t", action="store_true", dest="is_template", default=False,
-                            help="Generate code for template")
-
-        parser.add_argument("--graphql", "-g", action="store_true", dest="is_graphql", default=False,
-                            help="Generate code for graphql")
-
-        parser.add_argument("--tests", "-te", action="store_true", dest="is_tests", default=False,
-                            help="Generate test code")
-
         parser.add_argument('path', nargs='?', type=str)
-        parser.add_argument('file', nargs='?', type=str, default='__all__')
 
     def import_model(self, mod):
         for name, obj in inspect.getmembers(mod, inspect.isclass):
@@ -89,32 +76,16 @@ class Command(BaseCommand):
 
     def parse_parameters(self, **options):
         self.path = options.get("path")
-        self.file = options.get("file")
-
-        # if self.file not in code_groups:
-        #     self.stdout.write(f"File arguments should in {list(code_groups.keys())}")
-        #     return
-
-        if options.get("is_view"):
-            self.files.append('views')
-
-        if options.get("is_api"):
-            self.files.append('api')
-
-        if options.get("is_template"):
-            self.files.append('templates')
-
-        if options.get("is_graphql"):
-            self.files.append('graphql')
-
-        if options.get("is_tests"):
-            self.files.append('tests')
-
         self.is_write = options.get("is_write")
         self.is_overwrite = options.get("is_overwrite")
 
-        if not self.files:
-            self.files = ['__all__']
+        if options.get("folder"):
+            if options.get("folder") in ['all', 'root']:
+                self.folder.append(f'__{options.get("folder")}__')
+            else:
+                self.folder.append(options.get("folder"))
+        else:
+            self.folder.append(['__all__'])
 
         self.module_str = self.path.replace('.py', '').replace('/', '.').strip('.')
         # self.module_str = self.module_str if '.models' in self.module_str else self.module_str + '.models'
@@ -143,7 +114,13 @@ class Command(BaseCommand):
 
         module_dir = os.path.join(*self.model_list[0].__module__.split('.')[:-1])
 
-        for template_file in self.get_template_files():
+        template_files = self.get_template_files()
+
+        if not template_files:
+            self.stdout.write(self.style.ERROR(f"Can't found template folder {', '.join(self.folder)}"))
+            return
+
+        for template_file in template_files:
             file_name_template = os.path.basename(template_file)[:-1 * len('.html')]
 
             if '{model}' in file_name_template:
@@ -204,10 +181,9 @@ class Command(BaseCommand):
 
     def get_template_files(self):
         templates = []
-        for file in self.files:
+        for file in self.folder:
             templates += self.template_folders.get(file, [])
 
-        print(templates)
         return templates
 
     def unescape(self, html):
