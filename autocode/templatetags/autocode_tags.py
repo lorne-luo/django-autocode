@@ -84,6 +84,8 @@ def get_graphql_type(field):
         'DecimalField': 'Float',
         'BooleanField': 'Boolean',
         'NullBooleanField': 'Boolean',
+        'ForeignKey': 'ID',
+        'OneToOneField': 'ID',
     }
 
     return django_graphql_type_maps.get(type_name, 'NameError')
