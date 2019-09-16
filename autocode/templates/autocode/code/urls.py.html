@@ -6,7 +6,7 @@ from .api import api_views
 
 router = routers.DefaultRouter()
 {% for model in models %}
-router.register(r'{{ model|get_var }}', api_views.{{ model|get_name }}ViewSet){% endfor %}
+router.register(r'{{ model|get_name|snakecase }}', api_views.{{ model|get_name }}ViewSet){% endfor %}
 
 
 urlpatterns = (
@@ -17,9 +17,9 @@ urlpatterns = (
 {% for model in models %}
 urlpatterns += (
     # urls for {{ model|get_name }}
-    path('{{ model|get_var }}/{{ model|get_var }}/', views.{{ model|get_name }}ListView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_list'),
-    path('{{ model|get_var }}/{{ model|get_var }}/create/', views.{{ model|get_name }}CreateView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_create'),
-    path('{{ model|get_var }}/{{ model|get_var }}/detail/&lt;slug:slug&gt;/', views.{{ model|get_name }}DetailView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_detail'),
-    path('{{ model|get_var }}/{{ model|get_var }}/update/&lt;slug:slug&gt;/', views.{{ model|get_name }}UpdateView.as_view(), name='{{ model|get_var }}_{{ model|get_var }}_update'),
+    path('{{ app_name }}/{{ model|get_name|snakecase }}/', views.{{ model|get_name }}ListView.as_view(), name='{{ app_name }}_{{ model|get_name|snakecase }}_list'),
+    path('{{ app_name }}/{{ model|get_name|snakecase }}/create/', views.{{ model|get_name }}CreateView.as_view(), name='{{ app_name }}_{{ model|get_name|snakecase }}_create'),
+    path('{{ app_name }}/{{ model|get_name|snakecase }}/detail/&lt;slug:slug&gt;/', views.{{ model|get_name }}DetailView.as_view(), name='{{ app_name }}_{{ model|get_name|snakecase }}_detail'),
+    path('{{ app_name }}/{{ model|get_name|snakecase }}/update/&lt;slug:slug&gt;/', views.{{ model|get_name }}UpdateView.as_view(), name='{{ app_name }}_{{ model|get_name|snakecase }}_update'),
 )
 {% endfor %}
