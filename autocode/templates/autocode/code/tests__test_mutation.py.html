@@ -1,0 +1,97 @@
+{% load autocode_tags %}import unittest
+from graphene.test import Client
+from faker import Faker
+from config.graphene_schema import schema
+from core.django.graphql.tests import GraphQLTestMixin
+
+from ..models import {{ models|list_models }}
+
+fake = Faker('en_AU')
+
+class MutationTest(GraphQLTestMixin, unittest.TestCase):
+    client = Client(schema)
+{% for model in models %}
+    # ===================================================================================== {{ model|get_name }}
+    def test_{{ model|get_name|lower }}(self):
+        fields = '''{% for field in model|get_fields %}
+        {{ field|get_field_name|camelcase }}{% endfor %}
+        '''
+
+        query = '''
+        mutation create{{ model|get_name }}($input: Create{{ model|get_name }}MutationInput!) {
+            create{{ model|get_name }}(input: $input) {
+                {{ model|get_name|camelcase }} {
+                    %s
+                }
+                status
+                errors {
+                    code
+                    message
+                    traceback
+                }
+            }
+        }
+        ''' % fields
+
+        input = {"input":
+            {
+                "{{ model|get_name|camelcase }}": {{% for field in model|get_fields_no_pk %}
+                    "{{ field|get_field_name|camelcase }}": fake.name(),{% endfor %}
+                }
+            }
+        }
+        response = self.client.execute(query, variables=input)
+        self.assert_mutation(response, 'create{{ model|get_name }}')
+        _id=response['data']['create{{ model|get_name }}']['{{ model|get_name|camelcase }}']['id']
+
+        # update {{ model|get_name }}
+
+        query = '''mutation update{{ model|get_name }}($input: Update{{ model|get_name }}MutationInput!) {
+            update{{ model|get_name }}(input: $input) {
+                {{ model|get_name|camelcase }} {
+                    %s
+                }
+                status
+                errors {
+                    code
+                    message
+                    traceback
+                }
+            }
+        }
+        ''' % fields
+
+        input = {"input":
+            {
+                "id": _id,
+                "{{ model|get_name|camelcase }}": {{% for field in model|get_fields_no_pk %}
+                    "{{ field|get_field_name|camelcase }}": fake.name(),{% endfor %}
+                }
+            }
+        }
+        response = self.client.execute(query, variables=input)
+        self.assert_mutation(response, 'update{{ model|get_name }}')
+
+        # delete {{ model|get_name }}
+
+        query = '''mutation delete{{ model|get_name }}($input: Delete{{ model|get_name }}MutationInput!) {
+            delete{{ model|get_name }}(input: $input) {
+                status
+                errors {
+                    code
+                    message
+                    traceback
+                }
+            }
+        }
+        '''
+
+        input = {"input":
+            {
+                "id": _id,
+            }
+        }
+        response = self.client.execute(query, variables=input)
+        self.assert_mutation(response, 'delete{{ model|get_name }}')
+
+{% endfor %}

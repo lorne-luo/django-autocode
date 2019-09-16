@@ -1,6 +1,6 @@
+import stringcase
 from django import template
 from django.utils.text import re_camel_case
-import stringcase
 
 register = template.Library()
 
@@ -50,16 +50,46 @@ def list_field_names_no_pk(model, ignore_pk=False):
 
 
 @register.filter(name='get_fields')
-def get_fields(model, ignore_pk=False):
-    if ignore_pk:
-        return [x for x in model._meta.fields if x.name not in ['id', 'pk'] and not x.name.endswith('Ptr')]
-
+def get_fields(model):
     return [x for x in model._meta.fields if not x.name.endswith('Ptr')]
+
+
+@register.filter(name='get_fields_exclude')
+def get_fields_exclude(model, args):
+    arg_list = [arg.strip() for arg in args.split(',')]
+    return [x for x in model._meta.fields if x.name not in arg_list and not x.name.endswith('Ptr')]
 
 
 @register.filter(name='get_fields_no_pk')
 def get_fields_no_pk(model):
-    return [x for x in model._meta.fields if x.name not in ['id', 'pk'] and not x.name.endswith('Ptr')]
+    return get_fields_exclude(model, 'id,pk')
+
+
+@register.filter(name='get_fields_in')
+def get_fields_in(model, args):
+    arg_list = [arg.strip() for arg in args.split(',')]
+    return [x for x in model._meta.fields if x.name in arg_list]
+
+
+@register.filter(name='get_field_name')
+def get_field_name(field):
+    if field.__class__.__name__ in ['OneToOneField', 'ForeignKey']:
+        return f'{field.name}_id'
+    return field.name
+
+
+@register.filter(name='get_field_type')
+def get_field_type(field):
+    if not field:
+        return None
+    return field.__class__.__name__
+
+
+@register.filter(name='is_required')
+def is_required(field):
+    if field.null == field.blank == False:
+        return True
+    return False
 
 
 @register.filter(name='get_graphql_type')

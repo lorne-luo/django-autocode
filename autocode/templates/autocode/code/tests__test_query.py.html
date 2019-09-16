@@ -1,0 +1,42 @@
+{% load autocode_tags %}import unittest
+from graphene.test import Client
+from config.graphene_schema import schema
+from core.django.graphql.tests import GraphQLTestMixin
+from ..models import {{ models|list_models }}
+
+
+class QueryTest(GraphQLTestMixin, unittest.TestCase):
+    client = Client(schema)
+{% for model in models %}
+    # ===================================================================================== {{ model|get_name }}
+    def test_{{ model|get_name|lower }}(self):
+        fields = '''{% for field in model|get_fields %}
+        {{ field|get_field_name|camelcase }}{% endfor %}'''
+
+        query = '''
+        {
+            all{{ model|get_name }} {
+                totalCount
+                edgeCount
+                pageInfo {
+                    startCursor
+                    endCursor
+                    hasNextPage
+                    hasPreviousPage
+                }
+                edges {
+                    node {
+                        %s
+                    }
+                }
+            }
+            {{ model|get_name|camelcase }}(id: "%s") {
+                %s
+            }
+        }
+        ''' % (fields, {{ model|get_name }}.objects.first().global_id, fields)
+
+        response = self.client.execute(query)
+        self.assert_query(response)
+
+{% endfor %}
