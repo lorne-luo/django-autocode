@@ -52,14 +52,14 @@ def list_field_names_no_pk(model, ignore_pk=False):
 @register.filter(name='get_fields')
 def get_fields(model, ignore_pk=False):
     if ignore_pk:
-        return [x for x in model._meta.fields if x.name not in ['id', 'pk']]
+        return [x for x in model._meta.fields if x.name not in ['id', 'pk'] and not x.name.endswith('Ptr')]
 
-    return model._meta.fields
+    return [x for x in model._meta.fields if not x.name.endswith('Ptr')]
 
 
 @register.filter(name='get_fields_no_pk')
 def get_fields_no_pk(model):
-    return [x for x in model._meta.fields if x.name not in ['id', 'pk']]
+    return [x for x in model._meta.fields if x.name not in ['id', 'pk'] and not x.name.endswith('Ptr')]
 
 
 @register.filter(name='get_graphql_type')
