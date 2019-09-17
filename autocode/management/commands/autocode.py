@@ -83,10 +83,11 @@ class Command(BaseCommand):
             return
 
         if options.get("folder"):
-            if options.get("folder") in ['all', 'root']:
-                self.folder.append(f'__{options.get("folder")}__')
-            else:
-                self.folder.append(options.get("folder"))
+            for folder in options.get("folder").split(','):
+                if folder in ['all', 'root']:
+                    self.folder.append(f'__{folder}__')
+                else:
+                    self.folder.append(folder)
         else:
             self.folder.append(['__all__'])
 
@@ -124,7 +125,7 @@ class Command(BaseCommand):
         template_files = self.get_template_files()
 
         if not template_files:
-            self.stdout.write(self.style.ERROR(f"Can't found template folder {', '.join(self.folder)}"))
+            self.stdout.write(self.style.ERROR(f"Can't find template folder {', '.join(self.folder)}"))
             return
 
         for template_file in template_files:
