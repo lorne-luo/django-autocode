@@ -1,6 +1,5 @@
 import stringcase
 from django import template
-from django.utils.text import re_camel_case
 
 register = template.Library()
 

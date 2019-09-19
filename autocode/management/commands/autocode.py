@@ -165,7 +165,7 @@ class Command(BaseCommand):
         return context_data
 
     def write_file(self, module_dir, filename, content, model=None):
-        model_name = model.__name__.lower() if None else ''
+        model_name = model.__name__.lower() if model else ''
         filename = filename.format(model=model_name, module=self.app_name)
         path = os.path.join(module_dir, *filename.split('__'))
 
