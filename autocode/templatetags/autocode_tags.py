@@ -30,16 +30,22 @@ def list_models(models, suffix=''):
     return ', '.join([m._meta.object_name + suffix for m in models])
 
 
+@register.filter(name='list_field_names_exclude')
+def list_field_names_exclude(model, args=''):
+    arg_list = [arg.strip() for arg in args.split(',')]
+    return '["%s"]' % '", "'.join(
+        [f.name for f in model._meta.fields if f.name not in arg_list and not f.name.endswith('Ptr')])
+
+
 @register.filter(name='list_field_names')
-def list_field_names(model, ignore_pk=False):
-    if ignore_pk:
-        return '["%s"]' % '", "'.join([f.name for f in model._meta.fields if f.name not in ['pk', 'id']])
-    return '["%s"]' % '", "'.join([f.name for f in model._meta.fields])
+def list_field_names(model):
+    return '["%s"]' % '", "'.join([f.name for f in model._meta.fields if not f.name.endswith('Ptr')])
 
 
 @register.filter(name='list_field_names_no_pk')
-def list_field_names_no_pk(model, ignore_pk=False):
-    return '["%s"]' % '", "'.join([f.name for f in model._meta.fields if f.name not in ['pk', 'id']])
+def list_field_names_no_pk(model):
+    return '["%s"]' % '", "'.join(
+        [f.name for f in model._meta.fields if f.name not in ['pk', 'id'] and not f.name.endswith('Ptr')])
 
 
 @register.filter(name='get_fields')
@@ -48,7 +54,7 @@ def get_fields(model):
 
 
 @register.filter(name='get_fields_exclude')
-def get_fields_exclude(model, args):
+def get_fields_exclude(model, args=''):
     arg_list = [arg.strip() for arg in args.split(',')]
     return [x for x in model._meta.fields if x.name not in arg_list and not x.name.endswith('Ptr')]
 
