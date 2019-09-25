@@ -96,6 +96,7 @@ def get_graphql_type(field):
     django_graphql_type_maps = {
         'AutoField': 'ID',
         'CharField': 'String',
+        'SlugField': 'String',
         'TextField': 'String',
         'DateField': 'String',
         'DateTimeField': 'String',
